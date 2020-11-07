@@ -1,5 +1,5 @@
 import abc
-from multiprocessing import Pipe
+from multiprocessing import Pipe as mpPipe
 
 class BasePipe(object, metaclass=abc.ABCMeta):
     # Abstract class for pipes
@@ -11,9 +11,9 @@ class BasePipe(object, metaclass=abc.ABCMeta):
         raise NotImplementedError('users must define send to use this base class')
 
 
-class Pipes(BasePipe):
+class Pipe(BasePipe):
     def __init__(self):
-        self.Inqueue,self.Outqueue = Pipe(duplex=False)
+        self.Inqueue,self.Outqueue = mpPipe(duplex=False)
     def receive(self):
         return self.Inqueue.recv()
     def send(self,Message):
