@@ -28,8 +28,8 @@ class Filter(BaseFilter):
     def __init__(self, id: str, filterProcess):
         self.outgoingPipes = []
         self.incomingPipes = []
-        self.incomingConnection = {}
-        self.outgoingConnection = {}
+        self.incomingConnections = []
+        self.outgoingConnections = []
         self.filterProcess = filterProcess
         self.id = id
     
@@ -38,6 +38,18 @@ class Filter(BaseFilter):
     
     def addIncomingPipe(self, pipe: Pipe):
         self.incomingPipes.append(pipe)
+    
+    def getIncomingConnections(self):
+        return self.incomingConnections
+
+    def setIncomingConnections(self, incomingConnections):
+        self.incomingConnections = incomingConnections
+
+    def getOutgoingConnections(self):
+        return self.outgoingConnections
+
+    def setOutgoingConnections(self, outgoingConnections):
+        self.outgoingConnections = outgoingConnections
 
     def run(self):
         while self.incomingConnections:
