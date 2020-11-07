@@ -1,9 +1,8 @@
 import abc
 from multiprocessing import Pipe
+
 class BasePipe(object, metaclass=abc.ABCMeta):
     # Abstract class for pipes
-    def __init__(self,strategy):
-        self.strategy = strategy
     @abc.abstractmethod
     def receive(self):
         raise NotImplementedError('users must define receive to use this base class')
@@ -13,11 +12,10 @@ class BasePipe(object, metaclass=abc.ABCMeta):
 
 
 class Pipes(BasePipe):
-	def __init__(self,strategy):
-		self.Inqueue,self.Outqueue = Pipe()
-		self.Strategy = strategy
-	def receive():
+    def __init__(self):
+        self.Inqueue,self.Outqueue = Pipe(duplex=False)
+    def receive(self):
         return self.Inqueue.recv()
-	def send(Message):
-		Message = self.Strategy.getMessage(Messages)
-		self.Outqueue.send(self.Messages)
+    def send(self,Message):
+        self.Outqueue.send(Message)
+        self.Outqueue.close()
