@@ -1,6 +1,7 @@
 import abc
 import typing
-from multiprocessing import Process
+from multiprocessing import Process, Pipe, current_process
+from multiprocessing.connection import wait
 from .pipe import Pipe
 from .message import Message
 
@@ -16,11 +17,11 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
         raise NotImplementedError('not nececssary at the moment')
 
     def __init__(self, id: str, filterProcess):
-        self.id = id
-        self.filterProcess = filterProcess
+        pass
     
     def process(self, data):
-        output = filterProcess(data)
+        output = self.filterProcess(data)
+        return output
 
 
 class Filter(BaseFilter):
@@ -29,6 +30,8 @@ class Filter(BaseFilter):
         self.incomingPipes = []
         self.incomingConnection = {}
         self.outgoingConnection = {}
+        self.filterProcess = filterProcess
+        self.id = id
     
     def addOutgoingPipe(self, pipe: Pipe):
         self.outgoingPipes.append(pipe)
@@ -36,23 +39,26 @@ class Filter(BaseFilter):
     def addIncomingPipe(self, pipe: Pipe):
         self.incomingPipes.append(pipe)
 
-    def run():
-        while incomingConnections:
-            for r in wait(incomingConnections):
+    def run(self):
+        while self.incomingConnections:
+            for r in wait(self.incomingConnections):
                 try:
                     input = r.recv()
                 except EOFError:
-                    incomingConnections.remove(r)
+                    self.incomingConnections.remove(r)
                 else:
                     print("Received")
-        output = process(input)
-        for conn in outgoingConnections:
+        output = self.process(input)
+        for conn in  self.outgoingConnections:
             conn.send(output)
+            conn.close()
 
 class SourceFilter(BaseFilter):
     def __init__(self, id: str, filterProcess):
         self.outgoingPipes = []
         self.outgoingConnections = []
+        self.filterProcess = filterProcess
+        self.id = id
 
     def getOutgoingPipes(self):
         return self.outgoingPipes
@@ -66,16 +72,19 @@ class SourceFilter(BaseFilter):
     def setOutgoingConnections(self, outgoingConnections):
         self.outgoingConnections = outgoingConnections
 
-    def run(input):
-        output = process(input)
-        for conn in outgoingConnections:
+    def run(self, input):
+        output = self.process(input)
+        for conn in self.outgoingConnections:
             conn.send(output)
+            conn.close()
     
 
 class SinkFilter(BaseFilter):
     def __init__(self, id: str, filterProcess):
         self.incomingPipes = []
         self.incomingConnections = []
+        self.filterProcess = filterProcess
+        self.id = id
 
     def addIncomingPipe(self, pipe: Pipe):
         self.incomingPipes.append(pipe)
@@ -89,14 +98,17 @@ class SinkFilter(BaseFilter):
     def setIncomingConnections(self, incomingConnections):
         self.incomingConnections = incomingConnections
 
-    def run():
-        while incomingConnections:
-            for r in wait(incomingConnections):
+    def run(self):
+        print (len(self.incomingConnections))
+        if len(self.incomingConnections)==0:
+            print('No incoming connections yet!')
+        while self.incomingConnections:
+            for r in wait(self.incomingConnections):
                 try:
                     input = r.recv()
                 except EOFError:
-                    incomingConnections.remove(r)
+                    self.incomingConnections.remove(r)
                 else:
                     print("Received")
-        output = process(input)
+        output = self.process(input)
         return output
