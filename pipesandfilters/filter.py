@@ -42,14 +42,14 @@ class Filter(BaseFilter):
     def getIncomingConnections(self):
         return self.incomingConnections
 
-    def setIncomingConnections(self, incomingConnections):
-        self.incomingConnections = incomingConnections
+    def addIncomingConnection(self, incomingConnection):
+        self.incomingConnections.append(incomingConnection)
 
     def getOutgoingConnections(self):
         return self.outgoingConnections
 
-    def setOutgoingConnections(self, outgoingConnections):
-        self.outgoingConnections = outgoingConnections
+    def addOutgoingConnection(self, outgoingConnection):
+        self.outgoingConnections.append(outgoingConnection)
 
     def run(self):
         while self.incomingConnections:
@@ -81,8 +81,8 @@ class SourceFilter(BaseFilter):
     def getOutgoingConnections(self):
         return self.outgoingConnections
 
-    def setOutgoingConnections(self, outgoingConnections):
-        self.outgoingConnections = outgoingConnections
+    def addOutgoingConnection(self, outgoingConnection):
+        self.outgoingConnections.append(outgoingConnection)
 
     def run(self, input):
         output = self.process(input)
@@ -107,8 +107,8 @@ class SinkFilter(BaseFilter):
     def getIncomingConnections(self):
         return self.incomingConnections
 
-    def setIncomingConnections(self, incomingConnections):
-        self.incomingConnections = incomingConnections
+    def addIncomingConnection(self, incomingConnection):
+        self.incomingConnections.append(incomingConnection)
 
     def run(self):
         print (len(self.incomingConnections))
