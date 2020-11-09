@@ -7,6 +7,12 @@ class PipeStrategy(object, metaclass=abc.ABCMeta):
     '''
     @abc.abstractclassmethod
     def transformMessageQueue(self,messages):
+        '''
+        Arguments:
+            messages(List):Input queue got from incomingFilter
+        Return:
+            messages(List): Processed the incomingFilter message using user's logic
+        '''
         raise NotImplementedError("transformMessageQueue should be defined in base clase")
 
 class FIFO(PipeStrategy):
