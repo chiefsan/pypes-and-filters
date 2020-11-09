@@ -25,7 +25,8 @@ class Pipe(BasePipe):
         strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)
     """
 
-    def __init__(self, incomingFilter, outgoingFilter, strategy=None):
+    def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
+        self.id = id
         self.InQueue, self.OutQueue = mpPipe()
         self.InQueue = [self.InQueue]
         self.OutQueue = [self.OutQueue]

@@ -1,4 +1,3 @@
-import abc
 import typing
 from multiprocessing import Process
 from .filter import Filter, SinkFilter
@@ -8,7 +7,7 @@ import networkx as nx
 from collections import defaultdict
 
 
-class Pipeline(object, metaclass=abc.ABCMeta):
+class Pipeline(object):
 
     """
     Abstract base Pipeline class which receives a message and preforms required processing.
@@ -88,15 +87,15 @@ class Pipeline(object, metaclass=abc.ABCMeta):
 
         """
 
-        def add_edge(self, head, tail, weight):
+        def add_edge(head, tail, weight):
             """
             Adds an edge to the graph.
             `head` and `tail are vertices representing the endpoints of the edge
             `weight` is the weight of the egde from head to tail
             """
             # Add the vertices to the graph (if they haven't already been added)
-            self.add_vertex(head)
-            self.add_vertex(tail)
+            add_vertex(head)
+            add_vertex(tail)
 
             # Self edge => invalid
             if head == tail:
@@ -107,14 +106,13 @@ class Pipeline(object, metaclass=abc.ABCMeta):
 
             self.adjacency[tail][head] = weight
 
-        def add_vertex(self, vertex):
+        def add_vertex(vertex):
             """
             Adds a vertex to the graph.
             `vertex` must be a hashable object
             """
             if vertex not in self.adjacency:
                 self.adjacency[vertex] = {}
-                self.num_vertices += 1
 
         # Visited dictionary to store the Filters visited condition
         visited = defaultdict(bool)
@@ -135,8 +133,9 @@ class Pipeline(object, metaclass=abc.ABCMeta):
             for pipe in currentFilter.getOutgoingPipes():
                 self.components.append(pipe)
                 # If a connected Filter has not been visited, then mark it visited and enqueue it
-                if visited[pipe.getOutgoingFilter] != True:
+                if visited[pipe.getOutgoingFilter()] != True:
                     queue.append(pipe.getOutgoingFilter())
+                    add_edge(currentFilter, pipe.getOutgoingFilter(), 1)
                 else:
                     print("Not Feasible")
                     # Cycle occurs and the Pipeline is notFeasible
@@ -155,9 +154,11 @@ class Pipeline(object, metaclass=abc.ABCMeta):
                 output = i.run()
         print(output)
 
-    def myGraphViz(self):
+    def myGraphViz(self, path):
         """
         Visualizes the graph using [networkx](https://pypi.org/project/networkx/).
+
+        path - path to store graph
         """
         G = nx.Graph()
         for head in self.adjacency:
@@ -165,7 +166,16 @@ class Pipeline(object, metaclass=abc.ABCMeta):
                 weight = self.adjacency[head][tail]
                 G.add_edge(head, tail, weight=weight)
         layout = nx.spring_layout(G, seed=0)
-        nx.draw(G, layout, with_labels=True)
-        labels = nx.get_edge_attributes(G, "weight")
+        labels = {v: v.id for v in G.nodes()}
+        nx.draw(
+            G,
+            layout,
+            node_size=0,
+            labels=labels,
+            with_labels=True,
+            bbox=dict(facecolor="skyblue", edgecolor="black", boxstyle="round,pad=0.2"),
+        )
+        labels = {e: e[1].getIncomingPipes()[0].id for e in G.edges()}
         nx.draw_networkx_edge_labels(G, pos=layout, edge_labels=labels)
-        plt.show()
+        # plt.show()
+        plt.savefig(path)
