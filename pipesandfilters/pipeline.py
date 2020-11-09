@@ -32,6 +32,7 @@ class Pipeline(object):
 
     def setSourceFilter(self, sourceFilter: SourceFilter):
         """Set the SouceFilter for the Pipeline.
+
         Parameters
         ----------
         sourceFilter : SourceFilter.
@@ -41,6 +42,7 @@ class Pipeline(object):
 
     def addSinkFilter(self, sinkFilter: SinkFilter):
         """Append a Filter to the list of SinkFilter of the Pipeline.
+
         Parameters
         ----------
         sinkFilter : SinkFilter
@@ -50,6 +52,7 @@ class Pipeline(object):
 
     def getSourceFilter(self):
         """Get the SourceFilter of the Pipeline.
+
         Returns
         -------
         SourceFilter
@@ -59,7 +62,7 @@ class Pipeline(object):
 
     def getSinkFilter(self):
         """Get the list of SinkFilter of the Pipeline.
-
+        
         Returns
         -------
         SinkFilter[]
@@ -153,6 +156,7 @@ class Pipeline(object):
 
     def run(self, input):
         """Fire up all the components in the pipeline.
+        
         Parameters
         ----------
         input

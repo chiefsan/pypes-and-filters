@@ -22,7 +22,8 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
         raise NotImplementedError("not nececssary at the moment")
 
     def __init__(self, id: str, filterProcess):
-        """Determine how the Filter executes the required process when spawned.
+        """
+
         Parameters
         ----------
         id : str
@@ -34,6 +35,7 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
 
     def process(self, data):
         """Apply `filterProcess` on the message.
+        
         Parameters
         ----------
         data : object
@@ -59,6 +61,7 @@ class Filter(BaseFilter):
 
     def addOutgoingPipe(self, pipe: Pipe):
         """ Add an outgoing pipe to the Filter.
+
         Parameters
         ----------
         pipe : Pipe
@@ -68,6 +71,7 @@ class Filter(BaseFilter):
 
     def getOutgoingPipes(self):
         """ Return outgoing pipes of the Filter.
+
         Returns
         -------
         Pipe[]
@@ -77,6 +81,7 @@ class Filter(BaseFilter):
 
     def getIncomingPipes(self):
         """ Return incoming pipes of the Filter.
+
         Returns
         -------
         Pipe[]
@@ -86,15 +91,17 @@ class Filter(BaseFilter):
 
     def addIncomingPipe(self, pipe: Pipe):
         """ Add an incoming pipe to the Filter.
+
         Parameters
         ----------
         pipe : Pipe
-            The pipe connected to the incoming end of the Filter.
+            The pipe connected to the incoming end of the Filterss.
         """
         self.incomingPipes.append(pipe)
 
     def getIncomingConnections(self):
         """ Return incoming connection objects of the Filter.
+
         Returns
         -------
         Connection[]
@@ -104,6 +111,7 @@ class Filter(BaseFilter):
 
     def addIncomingConnection(self, incomingConnection):
         """ Add an incoming connection object to the Filter.
+
         Parameters
         ----------
         incomingConnection : Connection
@@ -113,6 +121,7 @@ class Filter(BaseFilter):
 
     def getOutgoingConnections(self):
         """ Return outgoing connection objects of the Filter.
+
         Returns
         -------
         Connection[]
@@ -122,6 +131,7 @@ class Filter(BaseFilter):
 
     def addOutgoingConnection(self, outgoingConnection):
         """ Add an outgoing connection object to the Filter.
+
         Parameters
         ----------
         outgoingConnection : Connection
@@ -159,6 +169,7 @@ class SourceFilter(BaseFilter):
 
     def getOutgoingPipes(self):
         """ Return outgoing pipes of the Filter.
+
         Returns
         -------
         Pipe[]
@@ -168,6 +179,7 @@ class SourceFilter(BaseFilter):
 
     def addOutgoingPipe(self, pipe: Pipe):
         """ Add an outgoing pipe to the Filter.
+
         Parameters
         ----------
         pipe : Pipe
@@ -177,6 +189,7 @@ class SourceFilter(BaseFilter):
 
     def getOutgoingConnections(self):
         """ Return outgoing connection objects of the Filter.
+
         Returns
         -------
         Connection[]
@@ -186,6 +199,7 @@ class SourceFilter(BaseFilter):
 
     def addOutgoingConnection(self, outgoingConnection):
         """ Add an outgoing connection object to the Filter.
+        
         Parameters
         ----------
         outgoingConnection : Connection
@@ -214,6 +228,7 @@ class SinkFilter(BaseFilter):
 
     def addIncomingPipe(self, pipe: Pipe):
         """ Add an incoming pipe to the Filter.
+        
         Parameters
         ----------
         pipe : Pipe
@@ -223,6 +238,7 @@ class SinkFilter(BaseFilter):
 
     def getIncomingPipes(self):
         """ Return incoming pipes of the Filter.
+        
         Returns
         -------
         Pipe[]
@@ -232,6 +248,7 @@ class SinkFilter(BaseFilter):
 
     def getIncomingConnections(self):
         """ Return incoming connection objects of the Filter.
+        
         Returns
         -------
         Connection[]
@@ -241,6 +258,7 @@ class SinkFilter(BaseFilter):
 
     def addIncomingConnection(self, incomingConnection):
         """ Add an incoming connection object to the Filter.
+        
         Parameters
         ----------
         incomingConnection : Connection
