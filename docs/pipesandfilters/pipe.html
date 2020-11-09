@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>pipesandfilters.pipe API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cse.google.com/cse.js?cx=017837193012385208679:pey8ky8gdqw"></script>
+<style>.gsc-control-cse {padding:0 !important;margin-top:1em}</style>
+<style>.homelink{display:block;font-size:2em;font-weight:bold;color:#555;padding-bottom:.5em;border-bottom:1px solid silver}.homelink:hover{color:inherit}.homelink img{max-width:20%;max-height:5em;margin:auto;margin-bottom:.3em}</style>
+<link rel="icon" href="https://gist.githubusercontent.com/chiefsan/e89dd2916f245fd2a229b3d349cb31b0/raw/80860b767f47752bd903bb777f3cd3aa2351dd49/funnel-logo.svg">
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pipesandfilters.pipe</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L0-L103" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">import abc
+from multiprocessing import Pipe as mpPipe
+from multiprocessing.connection import wait
+
+# from pipestrategy import FIFO,LIFO
+
+
+class BasePipe(object, metaclass=abc.ABCMeta):
+    # Abstract class for pipes
+    pass
+    # @abc.abstractmethod
+    # def receive(self):
+    #     raise NotImplementedError(&#39;users must define receive to use this base class&#39;)
+    # @abc.abstractclassmethod
+    # def send(self,message):
+    #     raise NotImplementedError(&#39;users must define send to use this base class&#39;)
+
+
+class Pipe(BasePipe):
+    &#34;&#34;&#34;Implements Pipe concept
+    Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.
+    Arguments:
+        incomingFilter(Filter) : Filter from which pipe gets message
+        outgoingFilter(Filter) : Filter to which pipe needs to send the message
+        strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)
+    &#34;&#34;&#34;
+
+    def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
+        self.id = id
+        self.InQueue, self.OutQueue = mpPipe()
+        self.InQueue = [self.InQueue]
+        self.OutQueue = [self.OutQueue]
+        self.incomingFilter = incomingFilter
+        self.outgoingFilter = outgoingFilter
+        reader, writer = mpPipe()
+        self.incomingFilter.addOutgoingConnection(writer)
+        self.incomingConnection = [reader]
+        reader, writer = mpPipe()
+        self.outgoingFilter.addIncomingConnection(reader)
+        self.outgoingConnection = [writer]
+        self.incomingFilter.addOutgoingPipe(self)
+        self.outgoingFilter.addIncomingPipe(self)
+        self.strategy = strategy
+
+    def run(self):
+        &#34;&#34;&#34;
+        Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
+        &#34;&#34;&#34;
+        while self.incomingConnection:
+            Inputs = []
+            for r in wait(self.incomingConnection):
+                try:
+                    input = r.recv()
+                    Inputs.append(input)
+                except EOFError:
+                    self.incomingConnection.remove(r)
+                else:
+                    print(&#34;Received input from Incoming Filter&#34;)
+
+        # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
+        if self.strategy:
+            Inputs = self.strategy.transformMessageQueue(Inputs)
+        else:
+            Inputs = input
+        self.InQueue[0].send(Inputs)
+        self.InQueue[0].close()
+
+        while self.OutQueue:
+            for r in wait(self.OutQueue):
+                try:
+                    output = r.recv()
+                except EOFError:
+                    self.OutQueue.remove(r)
+                else:
+                    print(&#34;Received output from InQueue&#34;)
+
+        self.outgoingConnection[0].send(output)
+        self.outgoingConnection[0].close()
+
+    def setOutgoingFilter(self, outgoingFilter):
+        &#34;&#34;&#34;
+        Arguments:
+            outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+        &#34;&#34;&#34;
+        self.outgoingFilter = outgoingFilter
+
+    def getOutgoingFilter(self):
+        &#34;&#34;&#34;
+        Function to get the outgoingFilter
+        &#34;&#34;&#34;
+        return self.outgoingFilter
+
+    def setIncomingFilter(self, incomingFilter):
+        &#34;&#34;&#34;
+        Arguments:
+            incomingFilter(Filter) : sets the Filter from which pipe receive the message
+        &#34;&#34;&#34;
+        self.incomingFilter = incomingFilter
+
+    def getIncomingFilter(self):
+        &#34;&#34;&#34;
+        Function to get the incomingFilter
+        &#34;&#34;&#34;
+        return self.incomingFilter</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pipesandfilters.pipe.BasePipe"><code class="flex name class">
+<span>class <span class="ident">BasePipe</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L8-L10" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">class BasePipe(object, metaclass=abc.ABCMeta):
+    # Abstract class for pipes
+    pass</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pipesandfilters.pipe.Pipe" href="#pipesandfilters.pipe.Pipe">Pipe</a></li>
+</ul>
+</dd>
+<dt id="pipesandfilters.pipe.Pipe"><code class="flex name class">
+<span>class <span class="ident">Pipe</span></span>
+<span>(</span><span>id, incomingFilter, outgoingFilter, strategy=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implements Pipe concept
+Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.</p>
+<h2 id="arguments">Arguments</h2>
+<p>incomingFilter(Filter) : Filter from which pipe gets message
+outgoingFilter(Filter) : Filter to which pipe needs to send the message
+strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L19-L104" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">class Pipe(BasePipe):
+    &#34;&#34;&#34;Implements Pipe concept
+    Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.
+    Arguments:
+        incomingFilter(Filter) : Filter from which pipe gets message
+        outgoingFilter(Filter) : Filter to which pipe needs to send the message
+        strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)
+    &#34;&#34;&#34;
+
+    def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
+        self.id = id
+        self.InQueue, self.OutQueue = mpPipe()
+        self.InQueue = [self.InQueue]
+        self.OutQueue = [self.OutQueue]
+        self.incomingFilter = incomingFilter
+        self.outgoingFilter = outgoingFilter
+        reader, writer = mpPipe()
+        self.incomingFilter.addOutgoingConnection(writer)
+        self.incomingConnection = [reader]
+        reader, writer = mpPipe()
+        self.outgoingFilter.addIncomingConnection(reader)
+        self.outgoingConnection = [writer]
+        self.incomingFilter.addOutgoingPipe(self)
+        self.outgoingFilter.addIncomingPipe(self)
+        self.strategy = strategy
+
+    def run(self):
+        &#34;&#34;&#34;
+        Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
+        &#34;&#34;&#34;
+        while self.incomingConnection:
+            Inputs = []
+            for r in wait(self.incomingConnection):
+                try:
+                    input = r.recv()
+                    Inputs.append(input)
+                except EOFError:
+                    self.incomingConnection.remove(r)
+                else:
+                    print(&#34;Received input from Incoming Filter&#34;)
+
+        # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
+        if self.strategy:
+            Inputs = self.strategy.transformMessageQueue(Inputs)
+        else:
+            Inputs = input
+        self.InQueue[0].send(Inputs)
+        self.InQueue[0].close()
+
+        while self.OutQueue:
+            for r in wait(self.OutQueue):
+                try:
+                    output = r.recv()
+                except EOFError:
+                    self.OutQueue.remove(r)
+                else:
+                    print(&#34;Received output from InQueue&#34;)
+
+        self.outgoingConnection[0].send(output)
+        self.outgoingConnection[0].close()
+
+    def setOutgoingFilter(self, outgoingFilter):
+        &#34;&#34;&#34;
+        Arguments:
+            outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+        &#34;&#34;&#34;
+        self.outgoingFilter = outgoingFilter
+
+    def getOutgoingFilter(self):
+        &#34;&#34;&#34;
+        Function to get the outgoingFilter
+        &#34;&#34;&#34;
+        return self.outgoingFilter
+
+    def setIncomingFilter(self, incomingFilter):
+        &#34;&#34;&#34;
+        Arguments:
+            incomingFilter(Filter) : sets the Filter from which pipe receive the message
+        &#34;&#34;&#34;
+        self.incomingFilter = incomingFilter
+
+    def getIncomingFilter(self):
+        &#34;&#34;&#34;
+        Function to get the incomingFilter
+        &#34;&#34;&#34;
+        return self.incomingFilter</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pipesandfilters.pipe.BasePipe" href="#pipesandfilters.pipe.BasePipe">BasePipe</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pipesandfilters.pipe.Pipe.getIncomingFilter"><code class="name flex">
+<span>def <span class="ident">getIncomingFilter</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to get the incomingFilter</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L100-L104" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">def getIncomingFilter(self):
+    &#34;&#34;&#34;
+    Function to get the incomingFilter
+    &#34;&#34;&#34;
+    return self.incomingFilter</code></pre>
+</details>
+</dd>
+<dt id="pipesandfilters.pipe.Pipe.getOutgoingFilter"><code class="name flex">
+<span>def <span class="ident">getOutgoingFilter</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to get the outgoingFilter</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L87-L91" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">def getOutgoingFilter(self):
+    &#34;&#34;&#34;
+    Function to get the outgoingFilter
+    &#34;&#34;&#34;
+    return self.outgoingFilter</code></pre>
+</details>
+</dd>
+<dt id="pipesandfilters.pipe.Pipe.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L45-L78" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">def run(self):
+    &#34;&#34;&#34;
+    Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
+    &#34;&#34;&#34;
+    while self.incomingConnection:
+        Inputs = []
+        for r in wait(self.incomingConnection):
+            try:
+                input = r.recv()
+                Inputs.append(input)
+            except EOFError:
+                self.incomingConnection.remove(r)
+            else:
+                print(&#34;Received input from Incoming Filter&#34;)
+
+    # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
+    if self.strategy:
+        Inputs = self.strategy.transformMessageQueue(Inputs)
+    else:
+        Inputs = input
+    self.InQueue[0].send(Inputs)
+    self.InQueue[0].close()
+
+    while self.OutQueue:
+        for r in wait(self.OutQueue):
+            try:
+                output = r.recv()
+            except EOFError:
+                self.OutQueue.remove(r)
+            else:
+                print(&#34;Received output from InQueue&#34;)
+
+    self.outgoingConnection[0].send(output)
+    self.outgoingConnection[0].close()</code></pre>
+</details>
+</dd>
+<dt id="pipesandfilters.pipe.Pipe.setIncomingFilter"><code class="name flex">
+<span>def <span class="ident">setIncomingFilter</span></span>(<span>self, incomingFilter)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="arguments">Arguments</h2>
+<p>incomingFilter(Filter) : sets the Filter from which pipe receive the message</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L93-L98" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">def setIncomingFilter(self, incomingFilter):
+    &#34;&#34;&#34;
+    Arguments:
+        incomingFilter(Filter) : sets the Filter from which pipe receive the message
+    &#34;&#34;&#34;
+    self.incomingFilter = incomingFilter</code></pre>
+</details>
+</dd>
+<dt id="pipesandfilters.pipe.Pipe.setOutgoingFilter"><code class="name flex">
+<span>def <span class="ident">setOutgoingFilter</span></span>(<span>self, outgoingFilter)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="arguments">Arguments</h2>
+<p>outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/pipe.py#L80-L85" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">def setOutgoingFilter(self, outgoingFilter):
+    &#34;&#34;&#34;
+    Arguments:
+        outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+    &#34;&#34;&#34;
+    self.outgoingFilter = outgoingFilter</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<header>
+<a class="homelink" rel="home" title="pdoc Home" href="https://chiefsan.github.io/pypes-and-filters/">
+<img src="https://gist.githubusercontent.com/chiefsan/e89dd2916f245fd2a229b3d349cb31b0/raw/80860b767f47752bd903bb777f3cd3aa2351dd49/funnel-logo.svg" alt=""> Pypes and Filters
+</a>
+</header>
+<div class="gcse-search" style="height: 70px"
+data-as_oq="site:chiefsan.github.io inurl:github.com/chiefsan/pypesandfilters"
+data-gaCategoryParameter="pipesandfilters.pipe">
+</div>
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pipesandfilters" href="index.html">pipesandfilters</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pipesandfilters.pipe.BasePipe" href="#pipesandfilters.pipe.BasePipe">BasePipe</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pipesandfilters.pipe.Pipe" href="#pipesandfilters.pipe.Pipe">Pipe</a></code></h4>
+<ul class="">
+<li><code><a title="pipesandfilters.pipe.Pipe.getIncomingFilter" href="#pipesandfilters.pipe.Pipe.getIncomingFilter">getIncomingFilter</a></code></li>
+<li><code><a title="pipesandfilters.pipe.Pipe.getOutgoingFilter" href="#pipesandfilters.pipe.Pipe.getOutgoingFilter">getOutgoingFilter</a></code></li>
+<li><code><a title="pipesandfilters.pipe.Pipe.run" href="#pipesandfilters.pipe.Pipe.run">run</a></code></li>
+<li><code><a title="pipesandfilters.pipe.Pipe.setIncomingFilter" href="#pipesandfilters.pipe.Pipe.setIncomingFilter">setIncomingFilter</a></code></li>
+<li><code><a title="pipesandfilters.pipe.Pipe.setOutgoingFilter" href="#pipesandfilters.pipe.Pipe.setOutgoingFilter">setOutgoingFilter</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
