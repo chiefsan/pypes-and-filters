@@ -1,6 +1,7 @@
 import abc
 from multiprocessing import Pipe as mpPipe
 from multiprocessing.connection import wait
+from pipestrategy import FIFO,LIFO
 
 class BasePipe(object, metaclass=abc.ABCMeta):
     # Abstract class for pipes
@@ -14,7 +15,14 @@ class BasePipe(object, metaclass=abc.ABCMeta):
 
 
 class Pipe(BasePipe):
-    def __init__(self, incomingFilter, outgoingFilter):
+    '''Implements Pipe concept
+    Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.
+    Arguments:
+        incomingFilter(Filter) : Filter from which pipe gets message
+        outgoingFilter(Filter) : Filter to which pipe needs to send the message
+        strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)
+    '''
+    def __init__(self, incomingFilter, outgoingFilter,strategy):
         self.InQueue,self.OutQueue = mpPipe()
         self.InQueue = [self.InQueue]
         self.OutQueue = [self.OutQueue]
@@ -28,19 +36,26 @@ class Pipe(BasePipe):
         self.outgoingConnection = [writer]
         self.incomingFilter.addOutgoingPipe(self)
         self.outgoingFilter.addIncomingPipe(self)
+        self.strategy = strategy
 
     def run(self):
+        '''
+        Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
+        '''
         while self.incomingConnection:
+            Inputs=[]
             for r in wait(self.incomingConnection):
                 try:
                     input = r.recv()
+                    Inputs.append(input)
                 except EOFError:
                     self.incomingConnection.remove(r)
                 else:
                     print("Received input from Incoming Filter")
 
         # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
-        self.InQueue[0].send(input)
+        Inputs = self.strategy.transformMessageQueue(Inputs)
+        self.InQueue[0].send(Inputs)
         self.InQueue[0].close()
         
         while self.OutQueue:
@@ -52,18 +67,32 @@ class Pipe(BasePipe):
                 else:
                     print("Received output from InQueue")
         
-        self.outgoingConnection[0].send(input)
+        self.outgoingConnection[0].send(output)
         self.outgoingConnection[0].close()
 
     def setOutgoingFilter(self, outgoingFilter):
+        '''
+        Arguments:
+            outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+        '''
         self.outgoingFilter = outgoingFilter
 
     def getOutgoingFilter(self):
+        '''
+        Function to get the outgoingFilter
+        '''
         return self.outgoingFilter
 
     def setIncomingFilter(self, incomingFilter):
+        '''
+        Arguments:
+            incomingFilter(Filter) : sets the Filter from which pipe receive the message
+        '''
         self.incomingFilter = incomingFilter
 
     def getIncomingFilter(self):
+        '''
+        Function to get the incomingFilter
+        '''
         return self.incomingFilter
         
