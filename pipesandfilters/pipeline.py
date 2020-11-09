@@ -1,6 +1,6 @@
 import typing
 from multiprocessing import Process
-from .filter import Filter, SinkFilter
+from .filter import Filter, SinkFilter, SourceFilter
 from .pipe import Pipe
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -10,7 +10,8 @@ from collections import defaultdict
 class Pipeline(object):
 
     """
-    Abstract base Pipeline class which receives a message and preforms required processing.
+    Pipeline class. 
+    Encapsulates a set of data processing elements connected in series, where the output of one element is the input of the next one.
     """
 
     def __init__(self, id: str):
@@ -18,7 +19,7 @@ class Pipeline(object):
         Parameters
         ----------
         id : str
-            The name of the Pipeline
+            The name of the Pipeline.
         """
         self.id = id
         # Source Filter(starting point) of the pipeline
@@ -27,63 +28,55 @@ class Pipeline(object):
         self.sinkFilter = []
         self.adjacency = {}
         self.components = []
+        self.validated = False
 
-    def setSourceFilter(self, sourcefilter: Filter):
-        """Set the SouceFilter for the Pipeline
+    def setSourceFilter(self, sourceFilter: SourceFilter):
+        """Set the SouceFilter for the Pipeline.
         Parameters
         ----------
-        sourcefilter : Filter
+        sourceFilter : SourceFilter.
 
         """
-        self.sourceFilter = sourcefilter
+        self.sourceFilter = sourceFilter
 
-    def addSinkFilter(self, sinkfilter: Filter):
-        """Append a Filter to the SinkFilter list of the Pipeline
+    def addSinkFilter(self, sinkFilter: SinkFilter):
+        """Append a Filter to the list of SinkFilter of the Pipeline.
         Parameters
         ----------
-        sinkfilter : Filter
+        sinkFilter : SinkFilter
 
         """
-        self.sinkFilter.append(sinkfilter)
+        self.sinkFilter.append(sinkFilter)
 
     def getSourceFilter(self):
-        """ Get SourceFilter of the Pipeline
-        Parameters
-        ----------
-       
+        """Get the SourceFilter of the Pipeline.
         Returns
         -------
-        Filter
-            
-            a Filter representing the SinkFilter
-
+        SourceFilter
+            The SourceFilter of the Pipeline
         """
         return self.sourceFilter
 
     def getSinkFilter(self):
-        """Get SinkFilters of the Pipeline
-        Parameters
-        ----------
-       
+        """Get the list of SinkFilter of the Pipeline.
+
         Returns
         -------
-        List
-            
-            a list Filter representing the SinkFilter
+        SinkFilter[]
+            The list of SinkFilter of the Pipeline.
 
         """
         return self.sinkFilter
 
     def validate(self):
-        """validating the Pipeline whether there are any cycles or not
-        Parameters
-        ----------
+        """Validate the Pipeline.
+        
+        Verify whether the Pipeline can be represented by an acyclic connected graph with appropriate filters at the leaf nodes. Breadth First Search is applied on the Pipeline.
        
         Returns
         -------
         Bool
-            
-            a bool value to show the Pipeline is Feasible or not
+            A boolean value that indicates whether the Pipeline is valid or not.
 
         """
 
@@ -101,10 +94,8 @@ class Pipeline(object):
             if head == tail:
                 return
 
-            # Since graph is undirected, add both edge and reverse edge
+            # Since graph is directed, we are not adding the reverse edge
             self.adjacency[head][tail] = weight
-
-            self.adjacency[tail][head] = weight
 
         def add_vertex(vertex):
             """
@@ -114,68 +105,108 @@ class Pipeline(object):
             if vertex not in self.adjacency:
                 self.adjacency[vertex] = {}
 
-        # Visited dictionary to store the Filters visited condition
+        # Create a dictionary to maintain the list of Filters visited by the BFS.
         visited = defaultdict(bool)
+
         # Queue to store the filters
         queue = []
+
         # Enqueue the sourceFilter
         queue.append(self.getSourceFilter())
 
         while queue:
+            print(queue, self.components)
+
             # Dequeue the currentFilter to process
             currentFilter = queue.pop(0)
-            # Mark the currentFilter as visited
+
+            # Add the filter to the list of components
             self.components.append(currentFilter)
+
+            # Mark the currentFilter as visited
             visited[currentFilter] = True
+
+            # Reached a leaf node. Continue with the next iteration.
             if isinstance(currentFilter, SinkFilter):
                 continue
-            # Get all connected Filters of the curerentFilter.
+            if len(currentFilter.getOutgoingPipes()) == 0:
+                # NonSink filter is a leaf node => infeasible.
+                return False
+
+            # Get all outgoing pipes of curerentFilter.
             for pipe in currentFilter.getOutgoingPipes():
+
+                # Add the pipe to the list of components
                 self.components.append(pipe)
+
                 # If a connected Filter has not been visited, then mark it visited and enqueue it
                 if visited[pipe.getOutgoingFilter()] != True:
                     queue.append(pipe.getOutgoingFilter())
                     add_edge(currentFilter, pipe.getOutgoingFilter(), 1)
                 else:
                     print("Not Feasible")
-                    # Cycle occurs and the Pipeline is notFeasible
+                    # Pipeline is cyclic => infeasible
                     return False
-        # Cycle occurs and the Pipeline is notFeasible
+
+        self.validated = True
         return True
 
     def run(self, input):
-        lol = 0
-        for i in self.components:
-            lol += 1
-            print(i, type(i), lol)
-            if lol == 1:
-                i.run(input)
+        """Fire up all the components in the pipeline.
+        Parameters
+        ----------
+        input
+        
+        Returns
+        -------
+        output
+        """
+
+        # Validate the pipeline if necessary
+        if not self.validated:
+            self.validate()
+
+        index = 0
+        for component in self.components:
+            index += 1
+            if isinstance(component, SourceFilter):
+                component.run(input)
             else:
-                output = i.run()
+                output = component.run()
         print(output)
 
-    def myGraphViz(self, path):
+    def visualize(self, path):
         """
-        Visualizes the graph using [networkx](https://pypi.org/project/networkx/).
+        Visualize the Pipeline using [networkx](https://pypi.org/project/networkx/).
 
-        path - path to store graph
+        Parameters
+        ----------
+        path : file path
+            absolute path to store an image of the Pipeline
         """
-        G = nx.Graph()
+        graph = nx.Graph()
+
+        # add edges to the graph
         for head in self.adjacency:
             for tail in self.adjacency[head]:
                 weight = self.adjacency[head][tail]
-                G.add_edge(head, tail, weight=weight)
-        layout = nx.spring_layout(G, seed=0)
-        labels = {v: v.id for v in G.nodes()}
+                graph.add_edge(head, tail, weight=weight)
+
+        # generate a layout for the graph and set the vertex labels to the Filter ids
+        layout = nx.spring_layout(graph, seed=0)
+        labels = {v: v.id for v in graph.nodes()}
         nx.draw(
-            G,
+            graph,
             layout,
             node_size=0,
             labels=labels,
             with_labels=True,
             bbox=dict(facecolor="skyblue", edgecolor="black", boxstyle="round,pad=0.2"),
         )
-        labels = {e: e[1].getIncomingPipes()[0].id for e in G.edges()}
-        nx.draw_networkx_edge_labels(G, pos=layout, edge_labels=labels)
-        # plt.show()
+
+        # set the edge labels to the Pipe ids
+        labels = {e: e[1].getIncomingPipes()[0].id for e in graph.edges()}
+        nx.draw_networkx_edge_labels(graph, pos=layout, edge_labels=labels)
+
+        # save the figure in the given path
         plt.savefig(path)
