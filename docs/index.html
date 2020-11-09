@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
 <title>pipesandfilters API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="_Pypes and Filters_ is a package for implementing the pipes and filters architectural pattern …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -24,12 +24,53 @@
 <h1 class="title">Package <code>pipesandfilters</code></h1>
 </header>
 <section id="section-intro">
+<p><em>Pypes and Filters</em> is a package for implementing the pipes and filters architectural pattern.</p>
+<h2 id="install">Install</h2>
+<p>It is recommended to run Pypes and Filters in a conda environment. For instructions on how to install conda go to this link: <a href="https://docs.anaconda.com/anaconda/install/">https://docs.anaconda.com/anaconda/install/</a></p>
+<p>With conda installed, run these commands to create a new conda environment and download and install Pypes and Filters:</p>
+<pre><code class="shell">git clone https://github.com/chiefsan/pypes-and-filters.git
+cd pypes-and-filters
+conda env create
+conda activate pypes-and-filters-env
+pip install .
+</code></pre>
+<p><strong>Use Pypes and Filters without conda</strong></p>
+<pre><code class="shell">git clone https://github.com/chiefsan/pypes-and-filters.git
+cd pypes-and-filters
+pip install .
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/97a3d44afb2513b993348152dfe32a541118e796/pipesandfilters/__init__.py#L0-L4" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/__init__.py#L0-L30" class="git-link">Browse git</a>
 </summary>
-<pre><code class="python">import abc
+<pre><code class="python">&#39;&#39;&#39;
+_Pypes and Filters_ is a package for implementing the pipes and filters architectural pattern.
+
+## Install
+
+It is recommended to run Pypes and Filters in a conda environment. For instructions on how to install conda go to this link: https://docs.anaconda.com/anaconda/install/
+
+With conda installed, run these commands to create a new conda environment and download and install Pypes and Filters:
+
+```shell
+git clone https://github.com/chiefsan/pypes-and-filters.git
+cd pypes-and-filters
+conda env create
+conda activate pypes-and-filters-env
+pip install .
+```
+
+**Use Pypes and Filters without conda**
+
+```shell
+git clone https://github.com/chiefsan/pypes-and-filters.git
+cd pypes-and-filters
+pip install .
+```
+&#39;&#39;&#39;
+
+import abc
 from .pipe import Pipe
 from .message import Message
 from .filter import BaseFilter, Filter, SourceFilter, SinkFilter
@@ -84,7 +125,9 @@ data-gaCategoryParameter="pipesandfilters">
 </div>
 <h1>Index</h1>
 <div class="toc">
-<ul></ul>
+<ul>
+<li><a href="#install">Install</a></li>
+</ul>
 </div>
 <ul id="index">
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
