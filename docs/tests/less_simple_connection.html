@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
-<title>pipesandfilters API documentation</title>
+<title>pipesandfilters.tests.less_simple_connection API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -21,49 +21,29 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>pipesandfilters</code></h1>
+<h1 class="title">Module <code>pipesandfilters.tests.less_simple_connection</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/579c7c123c023c72adb0c0e2761bb6dad5dc268a/pipesandfilters/__init__.py#L0-L4" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/97a3d44afb2513b993348152dfe32a541118e796/pipesandfilters/tests/less_simple_connection.py#L0-L11" class="git-link">Browse git</a>
 </summary>
-<pre><code class="python">import abc
-from .pipe import Pipe
-from .message import Message
-from .filter import BaseFilter, Filter, SourceFilter, SinkFilter
-from .pipeline import Pipeline</code></pre>
+<pre><code class="python">from pipesandfilters import Filter, SourceFilter, SinkFilter, Pipe, Pipeline
+
+sink = SinkFilter(&#34;sink&#34;, abs)
+filter = Filter(1, abs)
+source = SourceFilter(&#34;source&#34;, abs)
+p = Pipe(&#34;pipe&#34;, source, sink)
+pipeline = Pipeline(&#34;lol&#34;)
+pipeline.setSourceFilter(source)
+pipeline.addSinkFilter(sink)
+# pipeline.validate()
+# pipeline.myGraphViz(&#34;/mnt/c/Users/sanja/Desktop/lol.PNG&#34;)
+pipeline.run(2)</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
-<dl>
-<dt><code class="name"><a title="pipesandfilters.filter" href="filter.html">pipesandfilters.filter</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pipesandfilters.message" href="message.html">pipesandfilters.message</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pipesandfilters.pipe" href="pipe.html">pipesandfilters.pipe</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pipesandfilters.pipeline" href="pipeline.html">pipesandfilters.pipeline</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pipesandfilters.pipestrategy" href="pipestrategy.html">pipesandfilters.pipestrategy</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pipesandfilters.tests" href="tests/index.html">pipesandfilters.tests</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
 </section>
 <section>
 </section>
@@ -79,22 +59,17 @@ from .pipeline import Pipeline</code></pre>
 </a>
 </header>
 <div class="gcse-search" style="height: 70px"
-data-as_oq="site:chiefsan.github.io inurl:github.com/chiefsan/pypesandfilters"
-data-gaCategoryParameter="pipesandfilters">
+data-as_oq="site:chiefsan.github.io inurl:github.com/chiefsan/pypes-and-filters"
+data-gaCategoryParameter="pipesandfilters.tests.less_simple_connection">
 </div>
 <h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pipesandfilters.filter" href="filter.html">pipesandfilters.filter</a></code></li>
-<li><code><a title="pipesandfilters.message" href="message.html">pipesandfilters.message</a></code></li>
-<li><code><a title="pipesandfilters.pipe" href="pipe.html">pipesandfilters.pipe</a></code></li>
-<li><code><a title="pipesandfilters.pipeline" href="pipeline.html">pipesandfilters.pipeline</a></code></li>
-<li><code><a title="pipesandfilters.pipestrategy" href="pipestrategy.html">pipesandfilters.pipestrategy</a></code></li>
-<li><code><a title="pipesandfilters.tests" href="tests/index.html">pipesandfilters.tests</a></code></li>
+<li><code><a title="pipesandfilters.tests" href="index.html">pipesandfilters.tests</a></code></li>
 </ul>
 </li>
 </ul>
