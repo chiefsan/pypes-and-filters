@@ -1,5 +1,7 @@
 # Pypes and Filters
 
+[![Build Status](https://travis-ci.org/chiefsan/pypes-and-filters.svg?branch=master)](https://travis-ci.org/chiefsan/pypes-and-filters)
+
 _Pypes and Filters_ is a package for implementing the pipes and filters architectural pattern.
 
 ## Install
