@@ -47,11 +47,11 @@ class Pipe(BasePipe):
         Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
         """
         while self.__incomingConnection:
-            Inputs = []
-            for r in wait(self.__incomingConnection):
+            inputs = []
+            for reader in wait(self.__incomingConnection):
                 try:
-                    input = r.recv()
-                    Inputs.append(input)
+                    input = reader.recv()
+                    inputs.append(input)
                 except EOFError:
                     self.__incomingConnection.remove(r)
                 else:
@@ -59,16 +59,16 @@ class Pipe(BasePipe):
 
         # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
         if self.__strategy:
-            Inputs = self.__strategy.transformMessageQueue(Inputs)
+            inputs = self.__strategy.transformMessageQueue(inputs)
         else:
-            Inputs = input
-        self.__inQueue[0].send(Inputs)
+            inputs = input
+        self.__inQueue[0].send(inputs)
         self.__inQueue[0].close()
 
         while self.__outQueue:
-            for r in wait(self.__outQueue):
+            for reader in wait(self.__outQueue):
                 try:
-                    output = r.recv()
+                    output = reader.recv()
                 except EOFError:
                     self.__outQueue.remove(r)
                 else:
