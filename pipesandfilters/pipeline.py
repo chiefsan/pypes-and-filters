@@ -23,12 +23,12 @@ class Pipeline(object):
         """
         self.__id = id
         # Source Filter(starting point) of the pipeline
-        self.sourceFilter = None
+        self.__sourceFilter = None
         # SinkFilter(ending point) of the Pipeline
-        self.sinkFilter = []
-        self.adjacency = {}
-        self.components = []
-        self.validated = False
+        self.__sinkFilter = []
+        self.__adjacency = {}
+        self.__components = []
+        self.__isValid = False
 
     def setSourceFilter(self, sourceFilter: SourceFilter):
         """Set the SouceFilter for the Pipeline.
@@ -38,7 +38,7 @@ class Pipeline(object):
         sourceFilter : SourceFilter.
 
         """
-        self.sourceFilter = sourceFilter
+        self.__sourceFilter = sourceFilter
 
     def addSinkFilter(self, sinkFilter: SinkFilter):
         """Append a Filter to the list of SinkFilter of the Pipeline.
@@ -48,7 +48,7 @@ class Pipeline(object):
         sinkFilter : SinkFilter
 
         """
-        self.sinkFilter.append(sinkFilter)
+        self.__sinkFilter.append(sinkFilter)
 
     def getSourceFilter(self):
         """Get the SourceFilter of the Pipeline.
@@ -58,7 +58,7 @@ class Pipeline(object):
         SourceFilter
             The SourceFilter of the Pipeline
         """
-        return self.sourceFilter
+        return self.__sourceFilter
 
     def getSinkFilter(self):
         """Get the list of SinkFilter of the Pipeline.
@@ -69,7 +69,7 @@ class Pipeline(object):
             The list of SinkFilter of the Pipeline.
 
         """
-        return self.sinkFilter
+        return self.__sinkFilter
 
     def validate(self):
         """Validate the Pipeline.
@@ -98,15 +98,15 @@ class Pipeline(object):
                 return
 
             # Since graph is directed, we are not adding the reverse edge
-            self.adjacency[head][tail] = weight
+            self.__adjacency[head][tail] = weight
 
         def add_vertex(vertex):
             """
             Adds a vertex to the graph.
             `vertex` must be a hashable object
             """
-            if vertex not in self.adjacency:
-                self.adjacency[vertex] = {}
+            if vertex not in self.__adjacency:
+                self.__adjacency[vertex] = {}
 
         # Create a dictionary to maintain the list of Filters visited by the BFS.
         visited = defaultdict(bool)
@@ -114,17 +114,19 @@ class Pipeline(object):
         # Queue to store the filters
         queue = []
 
+        self.__components = []
+
         # Enqueue the sourceFilter
         queue.append(self.getSourceFilter())
 
         while queue:
-            print(queue, self.components)
+            print(queue, self.__components)
 
             # Dequeue the currentFilter to process
             currentFilter = queue.pop(0)
 
             # Add the filter to the list of components
-            self.components.append(currentFilter)
+            self.__components.append(currentFilter)
 
             # Mark the currentFilter as visited
             visited[currentFilter] = True
@@ -140,7 +142,7 @@ class Pipeline(object):
             for pipe in currentFilter.getOutgoingPipes():
 
                 # Add the pipe to the list of components
-                self.components.append(pipe)
+                self.__components.append(pipe)
 
                 # If a connected Filter has not been visited, then mark it visited and enqueue it
                 if visited[pipe.getOutgoingFilter()] != True:
@@ -151,7 +153,7 @@ class Pipeline(object):
                     # Pipeline is cyclic => infeasible
                     return False
 
-        self.validated = True
+        self.__isValid = True
         return True
 
     def run(self, input):
@@ -167,11 +169,11 @@ class Pipeline(object):
         """
 
         # Validate the pipeline if necessary
-        if not self.validated:
+        if not self.__isValid:
             self.validate()
 
         index = 0
-        for component in self.components:
+        for component in self.__components:
             index += 1
             if isinstance(component, SourceFilter):
                 component.run(input)
@@ -191,9 +193,9 @@ class Pipeline(object):
         graph = nx.Graph()
 
         # add edges to the graph
-        for head in self.adjacency:
-            for tail in self.adjacency[head]:
-                weight = self.adjacency[head][tail]
+        for head in self.__adjacency:
+            for tail in self.__adjacency[head]:
+                weight = self.__adjacency[head][tail]
                 graph.add_edge(head, tail, weight=weight)
 
         # generate a layout for the graph and set the vertex labels to the Filter ids

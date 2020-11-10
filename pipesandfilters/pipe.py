@@ -53,7 +53,7 @@ class Pipe(BasePipe):
                     input = reader.recv()
                     inputs.append(input)
                 except EOFError:
-                    self.__incomingConnection.remove(r)
+                    self.__incomingConnection.remove(reader)
                 else:
                     print("Received input from Incoming Filter")
 
@@ -70,7 +70,7 @@ class Pipe(BasePipe):
                 try:
                     output = reader.recv()
                 except EOFError:
-                    self.__outQueue.remove(r)
+                    self.__outQueue.remove(reader)
                 else:
                     print("Received output from InQueue")
 
