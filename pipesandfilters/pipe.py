@@ -2,28 +2,27 @@ import abc
 from multiprocessing import Pipe as mpPipe
 from multiprocessing.connection import wait
 
-# from pipestrategy import FIFO,LIFO
-
+from .pipestrategy import FIFO,LIFO
 
 class BasePipe(object, metaclass=abc.ABCMeta):
-    # Abstract class for pipes
-    pass
-    # @abc.abstractmethod
-    # def receive(self):
-    #     raise NotImplementedError('users must define receive to use this base class')
-    # @abc.abstractclassmethod
-    # def send(self,message):
-    #     raise NotImplementedError('users must define send to use this base class')
+    '''
+    Parameters
+    ----------
+        incomingFilter : BaseFilter
+            Filter from which pipe gets message.
 
-
-class Pipe(BasePipe):
-    """Implements Pipe concept
-    Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.
-    Arguments:
-        incomingFilter(Filter) : Filter from which pipe gets message
-        outgoingFilter(Filter) : Filter to which pipe needs to send the message
-        strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)
-    """
+        outgoingFilter : BaseFilter
+            Filter to which pipe needs to send the message.
+            
+        strategy : PipeStrategy
+            Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO).
+    '''
+    @abc.abstractmethod
+    def run(self):
+        """
+        Get messages from the incomingFilter,then apply the pipe strategy to it, and finally send them to the outgoingFilter.
+        """
+        raise NotImplementedError('to be implemented by children')
 
     def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
         self.__id = id
@@ -42,69 +41,95 @@ class Pipe(BasePipe):
         self.__outgoingFilter.addIncomingPipe(self)
         self.__strategy = strategy
 
+class Pipe(BasePipe):
+    """A standard pipe.
+
+    A pipe acts as a bridge to transfer message from one filter to another in Pipes and Filters architectural design pattern.
+    """
+
     def run(self):
-        """
-        Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
-        """
-        while self.__incomingConnection:
+        while self._BasePipe__incomingConnection:
             inputs = []
-            for reader in wait(self.__incomingConnection):
+            for reader in wait(self._BasePipe__incomingConnection):
                 try:
                     input = reader.recv()
                     inputs.append(input)
                 except EOFError:
-                    self.__incomingConnection.remove(reader)
+                    self._BasePipe__incomingConnection.remove(reader)
                 else:
                     print("Received input from Incoming Filter")
 
-        # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
-        if self.__strategy:
-            inputs = self.__strategy.transformMessageQueue(inputs)
+        # processing the input aggregate and choosing which element to send
+
+        if self._BasePipe__strategy:
+            inputs = self._BasePipe__strategy.transformMessageQueue(inputs)
         else:
             inputs = input
-        self.__inQueue[0].send(inputs)
-        self.__inQueue[0].close()
+        self._BasePipe__inQueue[0].send(inputs)
+        self._BasePipe__inQueue[0].close()
 
-        while self.__outQueue:
-            for reader in wait(self.__outQueue):
+        while self._BasePipe__outQueue:
+            for reader in wait(self._BasePipe__outQueue):
                 try:
                     output = reader.recv()
                 except EOFError:
-                    self.__outQueue.remove(reader)
+                    self._BasePipe__outQueue.remove(reader)
                 else:
-                    print("Received output from InQueue")
+                    print("Received output from inQueue")
 
-        self.__outgoingConnection[0].send(output)
-        self.__outgoingConnection[0].close()
+        self._BasePipe__outgoingConnection[0].send(output)
+        self._BasePipe__outgoingConnection[0].close()
 
     def setOutgoingFilter(self, outgoingFilter):
         """
-        Arguments:
-            outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+        Set the outgoing filter of the pipe.
+
+        Parameters
+        ----------
+            outgoingFilter : BaseFilter
         """
-        self.__outgoingFilter = outgoingFilter
+        self._BasePipe__outgoingFilter = outgoingFilter
 
     def getOutgoingFilter(self):
         """
-        Function to get the outgoingFilter
+        Get the outgoing filter of the pipe.
+
+        Returns
+        -------
+            Filter
+                The outgoing filter.
         """
-        return self.__outgoingFilter
+        return self._BasePipe__outgoingFilter
 
     def setIncomingFilter(self, incomingFilter):
         """
-        Arguments:
-            incomingFilter(Filter) : sets the Filter from which pipe receive the message
+        Set the filter from which the pipe receives the message.
+
+        Parameters
+        ----------
+            incomingFilter : BaseFilter
+                The incoming filter.
         """
-        self.__incomingFilter = incomingFilter
+        self._BasePipe__incomingFilter = incomingFilter
 
     def getIncomingFilter(self):
         """
-        Function to get the incomingFilter
+        Get the incoming filter of the pipe.
+
+        Returns
+        -------
+            Filter
+                The incoming filter.
         """
-        return self.__incomingFilter
+        return self._BasePipe__incomingFilter
 
     def getId(self):
         """
-        Function to get the id of the Pipe
+        Get the id of the pipe.
+
+        Returns
+        -------
+            str
+                Pipe id
         """
-        return self.__id
+        return self._BasePipe__id

@@ -10,20 +10,26 @@ class PipeStrategy(object, metaclass=abc.ABCMeta):
     @abc.abstractclassmethod
     def transformMessageQueue(self, messages):
         """
-        Arguments:
-            messages(List):Input queue got from incomingFilter
-        Return:
-            messages(List): Processed the incomingFilter message using user's logic
+        Parameters
+        ----------
+            messages : List
+                Input queue got from incomingFilter
+
+        Returns
+        -------
+            messages : List
+                Processed the incomingFilter message using user's logic
         """
         raise NotImplementedError(
-            "transformMessageQueue should be defined in base clase"
+            "children should implement it"
         )
 
 
 class FIFO(PipeStrategy):
     """First In First Out strategy
+
     It makes the message which is first received from the pipe through incomingFilter
-    should be sent first to the outgoingFilter
+    should be sent first to the outgoingFilter.
     """
 
     def transformMessageQueue(self, messages):
@@ -32,8 +38,9 @@ class FIFO(PipeStrategy):
 
 class LIFO(PipeStrategy):
     """Last in First Out strategy
+
     It makes the message which is first received from the pipe through incomingFilter
-    should be sent last to the outgoingFilter    
+    should be sent last to the outgoingFilter    .
     """
 
     def transformMessageQueue(self, messages):

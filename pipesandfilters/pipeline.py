@@ -18,8 +18,8 @@ class Pipeline(object):
         """
         Parameters
         ----------
-        id : str
-            The name of the Pipeline.
+            id : str
+                The name of the Pipeline.
         """
         self.__id = id
         # Source Filter(starting point) of the pipeline
@@ -35,17 +35,17 @@ class Pipeline(object):
 
         Parameters
         ----------
-        sourceFilter : SourceFilter.
+            sourceFilter : SourceFilter.
 
         """
         self.__sourceFilter = sourceFilter
 
     def addSinkFilter(self, sinkFilter: SinkFilter):
-        """Append a Filter to the list of SinkFilter of the Pipeline.
+        """Add a Filter to the list of SinkFilter of the Pipeline.
 
         Parameters
         ----------
-        sinkFilter : SinkFilter
+            sinkFilter : SinkFilter
 
         """
         self.__sinkFilter.append(sinkFilter)
@@ -55,8 +55,8 @@ class Pipeline(object):
 
         Returns
         -------
-        SourceFilter
-            The SourceFilter of the Pipeline
+            SourceFilter
+                The SourceFilter of the Pipeline
         """
         return self.__sourceFilter
 
@@ -65,8 +65,8 @@ class Pipeline(object):
         
         Returns
         -------
-        SinkFilter[]
-            The list of SinkFilter of the Pipeline.
+            SinkFilter[]
+                The list of SinkFilter of the Pipeline.
 
         """
         return self.__sinkFilter
@@ -78,14 +78,14 @@ class Pipeline(object):
        
         Returns
         -------
-        Bool
-            A boolean value that indicates whether the Pipeline is valid or not.
+            Bool
+                A boolean value that indicates whether the Pipeline is valid or not.
 
         """
 
         def add_edge(head, tail, weight):
             """
-            Adds an edge to the graph.
+            Add an edge to the graph.
             `head` and `tail are vertices representing the endpoints of the edge
             `weight` is the weight of the egde from head to tail
             """
@@ -102,7 +102,7 @@ class Pipeline(object):
 
         def add_vertex(vertex):
             """
-            Adds a vertex to the graph.
+            Add a vertex to the graph.
             `vertex` must be a hashable object
             """
             if vertex not in self.__adjacency:
@@ -161,11 +161,11 @@ class Pipeline(object):
         
         Parameters
         ----------
-        input
+            input
         
         Returns
         -------
-        output
+            output
         """
 
         # Validate the pipeline if necessary
@@ -187,8 +187,8 @@ class Pipeline(object):
 
         Parameters
         ----------
-        path : file path
-            absolute path to store an image of the Pipeline
+            path : file path
+                absolute path to store an image of the Pipeline
         """
         graph = nx.Graph()
 
