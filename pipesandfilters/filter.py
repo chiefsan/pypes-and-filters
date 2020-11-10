@@ -29,6 +29,7 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
         ----------
             id : str
                 Identifier for the filter. 
+                
             filterProcess : function
                 The calllable object (function) that is applied by the filter on the message.
         """
