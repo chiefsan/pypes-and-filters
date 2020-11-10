@@ -1,4 +1,4 @@
-from pipesandfilters import Filter, SourceFilter, SinkFilter, Pipe, Pipeline
+from pypesandfilters import Filter, SourceFilter, SinkFilter, Pipe, Pipeline
 
 def test1():
     sink = SinkFilter("sink", abs)

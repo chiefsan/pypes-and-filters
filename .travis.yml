@@ -2,13 +2,13 @@ language: python
 python:
 - '3.7'
 install:
-- pip uninstall --yes pipesandfilters || true
+- pip uninstall --yes pypesandfilters || true
 - pip install --upgrade --force-reinstall --ignore-installed -e .
 - pip install "pytest==4.6.9; python_version != '3.3'" "pytest==2.9.2; python_version == '3.3'" typing
 script:
 - py.test
 - echo Checking whether installation flow is not broken...
-- pip uninstall --yes pipesandfilters || true
+- pip uninstall --yes pypesandfilters || true
 - pip install --ignore-installed .
 cache:
   pip: true
