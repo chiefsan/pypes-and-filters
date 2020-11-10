@@ -27,81 +27,81 @@ class Pipe(BasePipe):
 
     def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
         self.__id = id
-        self.InQueue, self.OutQueue = mpPipe()
-        self.InQueue = [self.InQueue]
-        self.OutQueue = [self.OutQueue]
-        self.incomingFilter = incomingFilter
-        self.outgoingFilter = outgoingFilter
+        self.__inQueue, self.__outQueue = mpPipe()
+        self.__inQueue = [self.__inQueue]
+        self.__outQueue = [self.__outQueue]
+        self.__incomingFilter = incomingFilter
+        self.__outgoingFilter = outgoingFilter
         reader, writer = mpPipe()
-        self.incomingFilter.addOutgoingConnection(writer)
-        self.incomingConnection = [reader]
+        self.__incomingFilter.addOutgoingConnection(writer)
+        self.__incomingConnection = [reader]
         reader, writer = mpPipe()
-        self.outgoingFilter.addIncomingConnection(reader)
-        self.outgoingConnection = [writer]
-        self.incomingFilter.addOutgoingPipe(self)
-        self.outgoingFilter.addIncomingPipe(self)
-        self.strategy = strategy
+        self.__outgoingFilter.addIncomingConnection(reader)
+        self.__outgoingConnection = [writer]
+        self.__incomingFilter.addOutgoingPipe(self)
+        self.__outgoingFilter.addIncomingPipe(self)
+        self.__strategy = strategy
 
     def run(self):
         """
         Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
         """
-        while self.incomingConnection:
+        while self.__incomingConnection:
             Inputs = []
-            for r in wait(self.incomingConnection):
+            for r in wait(self.__incomingConnection):
                 try:
                     input = r.recv()
                     Inputs.append(input)
                 except EOFError:
-                    self.incomingConnection.remove(r)
+                    self.__incomingConnection.remove(r)
                 else:
                     print("Received input from Incoming Filter")
 
         # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
-        if self.strategy:
-            Inputs = self.strategy.transformMessageQueue(Inputs)
+        if self.__strategy:
+            Inputs = self.__strategy.transformMessageQueue(Inputs)
         else:
             Inputs = input
-        self.InQueue[0].send(Inputs)
-        self.InQueue[0].close()
+        self.__inQueue[0].send(Inputs)
+        self.__inQueue[0].close()
 
-        while self.OutQueue:
-            for r in wait(self.OutQueue):
+        while self.__outQueue:
+            for r in wait(self.__outQueue):
                 try:
                     output = r.recv()
                 except EOFError:
-                    self.OutQueue.remove(r)
+                    self.__outQueue.remove(r)
                 else:
                     print("Received output from InQueue")
 
-        self.outgoingConnection[0].send(output)
-        self.outgoingConnection[0].close()
+        self.__outgoingConnection[0].send(output)
+        self.__outgoingConnection[0].close()
 
     def setOutgoingFilter(self, outgoingFilter):
         """
         Arguments:
             outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
         """
-        self.outgoingFilter = outgoingFilter
+        self.__outgoingFilter = outgoingFilter
 
     def getOutgoingFilter(self):
         """
         Function to get the outgoingFilter
         """
-        return self.outgoingFilter
+        return self.__outgoingFilter
 
     def setIncomingFilter(self, incomingFilter):
         """
         Arguments:
             incomingFilter(Filter) : sets the Filter from which pipe receive the message
         """
-        self.incomingFilter = incomingFilter
+        self.__incomingFilter = incomingFilter
 
     def getIncomingFilter(self):
         """
         Function to get the incomingFilter
         """
-        return self.incomingFilter
+        return self.__incomingFilter
 
     def getId(self):
         """
