@@ -21,7 +21,7 @@ class Pipeline(object):
         id : str
             The name of the Pipeline.
         """
-        self.id = id
+        self.__id = id
         # Source Filter(starting point) of the pipeline
         self.sourceFilter = None
         # SinkFilter(ending point) of the Pipeline
@@ -198,7 +198,7 @@ class Pipeline(object):
 
         # generate a layout for the graph and set the vertex labels to the Filter ids
         layout = nx.spring_layout(graph, seed=0)
-        labels = {v: v.id for v in graph.nodes()}
+        labels = {v: v.getId() for v in graph.nodes()}
         nx.draw(
             graph,
             layout,
@@ -209,7 +209,7 @@ class Pipeline(object):
         )
 
         # set the edge labels to the Pipe ids
-        labels = {e: e[1].getIncomingPipes()[0].id for e in graph.edges()}
+        labels = {e: e[1].getIncomingPipes()[0].getId() for e in graph.edges()}
         nx.draw_networkx_edge_labels(graph, pos=layout, edge_labels=labels)
 
         # save the figure in the given path

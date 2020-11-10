@@ -28,7 +28,7 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
         ----------
         id : str
             Identifier for the Filter. 
-        filterProcess : Filter
+        filterProcess : function
             The calllable object (function) that is applied by the Filter on the message.
         """
         pass
@@ -43,6 +43,12 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
         """
         output = self.filterProcess(data)
         return output
+    
+    def getId(self):
+        """
+        Function to get the id of the Filter
+        """
+        return self.__id
 
 
 class Filter(BaseFilter):
@@ -57,7 +63,7 @@ class Filter(BaseFilter):
         self.incomingConnections = []
         self.outgoingConnections = []
         self.filterProcess = filterProcess
-        self.id = id
+        self.__id = id
 
     def addOutgoingPipe(self, pipe: Pipe):
         """ Add an outgoing pipe to the Filter.
@@ -165,7 +171,7 @@ class SourceFilter(BaseFilter):
         self.outgoingPipes = []
         self.outgoingConnections = []
         self.filterProcess = filterProcess
-        self.id = id
+        self.__id = id
 
     def getOutgoingPipes(self):
         """ Return outgoing pipes of the Filter.
@@ -224,7 +230,7 @@ class SinkFilter(BaseFilter):
         self.incomingPipes = []
         self.incomingConnections = []
         self.filterProcess = filterProcess
-        self.id = id
+        self.__id = id
 
     def addIncomingPipe(self, pipe: Pipe):
         """ Add an incoming pipe to the Filter.

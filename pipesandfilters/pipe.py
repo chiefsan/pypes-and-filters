@@ -26,7 +26,7 @@ class Pipe(BasePipe):
     """
 
     def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
-        self.id = id
+        self.__id = id
         self.InQueue, self.OutQueue = mpPipe()
         self.InQueue = [self.InQueue]
         self.OutQueue = [self.OutQueue]
@@ -102,3 +102,9 @@ class Pipe(BasePipe):
         Function to get the incomingFilter
         """
         return self.incomingFilter
+
+    def getId(self):
+        """
+        Function to get the id of the Pipe
+        """
+        return self.__id
