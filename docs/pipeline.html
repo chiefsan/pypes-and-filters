@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
-<title>pipesandfilters.pipeline API documentation</title>
+<title>pypesandfilters.pipeline API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -21,13 +21,13 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pipesandfilters.pipeline</code></h1>
+<h1 class="title">Module <code>pypesandfilters.pipeline</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L0-L217" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L0-L217" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import typing
 from multiprocessing import Process
@@ -258,7 +258,7 @@ class Pipeline(object):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="pipesandfilters.pipeline.Pipeline"><code class="flex name class">
+<dt id="pypesandfilters.pipeline.Pipeline"><code class="flex name class">
 <span>class <span class="ident">Pipeline</span></span>
 <span>(</span><span>id: str)</span>
 </code></dt>
@@ -272,7 +272,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L10-L218" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L10-L218" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class Pipeline(object):
 
@@ -486,8 +486,8 @@ Encapsulates a set of data processing elements connected in series, where the ou
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="pipesandfilters.pipeline.Pipeline.addSinkFilter"><code class="name flex">
-<span>def <span class="ident">addSinkFilter</span></span>(<span>self, sinkFilter: <a title="pipesandfilters.filter.SinkFilter" href="filter.html#pipesandfilters.filter.SinkFilter">SinkFilter</a>)</span>
+<dt id="pypesandfilters.pipeline.Pipeline.addSinkFilter"><code class="name flex">
+<span>def <span class="ident">addSinkFilter</span></span>(<span>self, sinkFilter: <a title="pypesandfilters.filter.SinkFilter" href="filter.html#pypesandfilters.filter.SinkFilter">SinkFilter</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add a Filter to the list of SinkFilter of the Pipeline.</p>
@@ -497,7 +497,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L43-L51" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L43-L51" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addSinkFilter(self, sinkFilter: SinkFilter):
     &#34;&#34;&#34;Add a Filter to the list of SinkFilter of the Pipeline.
@@ -510,7 +510,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
     self.__sinkFilter.append(sinkFilter)</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipeline.Pipeline.getSinkFilter"><code class="name flex">
+<dt id="pypesandfilters.pipeline.Pipeline.getSinkFilter"><code class="name flex">
 <span>def <span class="ident">getSinkFilter</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -522,7 +522,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L63-L72" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L63-L72" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getSinkFilter(self):
     &#34;&#34;&#34;Get the list of SinkFilter of the Pipeline.
@@ -536,7 +536,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
     return self.__sinkFilter</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipeline.Pipeline.getSourceFilter"><code class="name flex">
+<dt id="pypesandfilters.pipeline.Pipeline.getSourceFilter"><code class="name flex">
 <span>def <span class="ident">getSourceFilter</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -548,7 +548,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L53-L61" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L53-L61" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getSourceFilter(self):
     &#34;&#34;&#34;Get the SourceFilter of the Pipeline.
@@ -561,7 +561,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
     return self.__sourceFilter</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipeline.Pipeline.run"><code class="name flex">
+<dt id="pypesandfilters.pipeline.Pipeline.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>self, input)</span>
 </code></dt>
 <dd>
@@ -575,7 +575,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L159-L182" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L159-L182" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def run(self, input):
     &#34;&#34;&#34;Fire up all the components in the pipeline.
@@ -603,8 +603,8 @@ Encapsulates a set of data processing elements connected in series, where the ou
     print(output)</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipeline.Pipeline.setSourceFilter"><code class="name flex">
-<span>def <span class="ident">setSourceFilter</span></span>(<span>self, sourceFilter: <a title="pipesandfilters.filter.SourceFilter" href="filter.html#pipesandfilters.filter.SourceFilter">SourceFilter</a>)</span>
+<dt id="pypesandfilters.pipeline.Pipeline.setSourceFilter"><code class="name flex">
+<span>def <span class="ident">setSourceFilter</span></span>(<span>self, sourceFilter: <a title="pypesandfilters.filter.SourceFilter" href="filter.html#pypesandfilters.filter.SourceFilter">SourceFilter</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Set the SouceFilter for the Pipeline.</p>
@@ -614,7 +614,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L33-L41" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L33-L41" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def setSourceFilter(self, sourceFilter: SourceFilter):
     &#34;&#34;&#34;Set the SouceFilter for the Pipeline.
@@ -627,7 +627,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
     self.__sourceFilter = sourceFilter</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipeline.Pipeline.validate"><code class="name flex">
+<dt id="pypesandfilters.pipeline.Pipeline.validate"><code class="name flex">
 <span>def <span class="ident">validate</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -640,7 +640,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L74-L157" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L74-L157" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def validate(self):
     &#34;&#34;&#34;Validate the Pipeline.
@@ -728,7 +728,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
     return True</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipeline.Pipeline.visualize"><code class="name flex">
+<dt id="pypesandfilters.pipeline.Pipeline.visualize"><code class="name flex">
 <span>def <span class="ident">visualize</span></span>(<span>self, path)</span>
 </code></dt>
 <dd>
@@ -740,7 +740,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L184-L218" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipeline.py#L184-L218" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def visualize(self, path):
     &#34;&#34;&#34;
@@ -792,7 +792,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
 </header>
 <div class="gcse-search" style="height: 70px"
 data-as_oq="site:chiefsan.github.io inurl:github.com/chiefsan/pypes-and-filters"
-data-gaCategoryParameter="pipesandfilters.pipeline">
+data-gaCategoryParameter="pypesandfilters.pipeline">
 </div>
 <h1>Index</h1>
 <div class="toc">
@@ -801,21 +801,21 @@ data-gaCategoryParameter="pipesandfilters.pipeline">
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pipesandfilters" href="index.html">pipesandfilters</a></code></li>
+<li><code><a title="pypesandfilters" href="index.html">pypesandfilters</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="pipesandfilters.pipeline.Pipeline" href="#pipesandfilters.pipeline.Pipeline">Pipeline</a></code></h4>
+<h4><code><a title="pypesandfilters.pipeline.Pipeline" href="#pypesandfilters.pipeline.Pipeline">Pipeline</a></code></h4>
 <ul class="two-column">
-<li><code><a title="pipesandfilters.pipeline.Pipeline.addSinkFilter" href="#pipesandfilters.pipeline.Pipeline.addSinkFilter">addSinkFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipeline.Pipeline.getSinkFilter" href="#pipesandfilters.pipeline.Pipeline.getSinkFilter">getSinkFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipeline.Pipeline.getSourceFilter" href="#pipesandfilters.pipeline.Pipeline.getSourceFilter">getSourceFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipeline.Pipeline.run" href="#pipesandfilters.pipeline.Pipeline.run">run</a></code></li>
-<li><code><a title="pipesandfilters.pipeline.Pipeline.setSourceFilter" href="#pipesandfilters.pipeline.Pipeline.setSourceFilter">setSourceFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipeline.Pipeline.validate" href="#pipesandfilters.pipeline.Pipeline.validate">validate</a></code></li>
-<li><code><a title="pipesandfilters.pipeline.Pipeline.visualize" href="#pipesandfilters.pipeline.Pipeline.visualize">visualize</a></code></li>
+<li><code><a title="pypesandfilters.pipeline.Pipeline.addSinkFilter" href="#pypesandfilters.pipeline.Pipeline.addSinkFilter">addSinkFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipeline.Pipeline.getSinkFilter" href="#pypesandfilters.pipeline.Pipeline.getSinkFilter">getSinkFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipeline.Pipeline.getSourceFilter" href="#pypesandfilters.pipeline.Pipeline.getSourceFilter">getSourceFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipeline.Pipeline.run" href="#pypesandfilters.pipeline.Pipeline.run">run</a></code></li>
+<li><code><a title="pypesandfilters.pipeline.Pipeline.setSourceFilter" href="#pypesandfilters.pipeline.Pipeline.setSourceFilter">setSourceFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipeline.Pipeline.validate" href="#pypesandfilters.pipeline.Pipeline.validate">validate</a></code></li>
+<li><code><a title="pypesandfilters.pipeline.Pipeline.visualize" href="#pypesandfilters.pipeline.Pipeline.visualize">visualize</a></code></li>
 </ul>
 </li>
 </ul>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
-<title>pipesandfilters.pipe API documentation</title>
+<title>pypesandfilters.pipe API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -21,13 +21,13 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pipesandfilters.pipe</code></h1>
+<h1 class="title">Module <code>pypesandfilters.pipe</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L0-L134" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L0-L134" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import abc
 from multiprocessing import Pipe as mpPipe
@@ -175,7 +175,7 @@ class Pipe(BasePipe):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="pipesandfilters.pipe.BasePipe"><code class="flex name class">
+<dt id="pypesandfilters.pipe.BasePipe"><code class="flex name class">
 <span>class <span class="ident">BasePipe</span></span>
 <span>(</span><span>id, incomingFilter, outgoingFilter, strategy=None)</span>
 </code></dt>
@@ -193,7 +193,7 @@ strategy : PipeStrategy
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L7-L42" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L7-L42" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class BasePipe(object, metaclass=abc.ABCMeta):
     &#39;&#39;&#39;
@@ -234,11 +234,11 @@ strategy : PipeStrategy
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="pipesandfilters.pipe.Pipe" href="#pipesandfilters.pipe.Pipe">Pipe</a></li>
+<li><a title="pypesandfilters.pipe.Pipe" href="#pypesandfilters.pipe.Pipe">Pipe</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="pipesandfilters.pipe.BasePipe.run"><code class="name flex">
+<dt id="pypesandfilters.pipe.BasePipe.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -246,7 +246,7 @@ strategy : PipeStrategy
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L20-L25" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L20-L25" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">@abc.abstractmethod
 def run(self):
@@ -258,7 +258,7 @@ def run(self):
 </dd>
 </dl>
 </dd>
-<dt id="pipesandfilters.pipe.Pipe"><code class="flex name class">
+<dt id="pypesandfilters.pipe.Pipe"><code class="flex name class">
 <span>class <span class="ident">Pipe</span></span>
 <span>(</span><span>id, incomingFilter, outgoingFilter, strategy=None)</span>
 </code></dt>
@@ -268,7 +268,7 @@ def run(self):
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L44-L135" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L44-L135" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class Pipe(BasePipe):
     &#34;&#34;&#34;A standard pipe.
@@ -365,11 +365,11 @@ def run(self):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="pipesandfilters.pipe.BasePipe" href="#pipesandfilters.pipe.BasePipe">BasePipe</a></li>
+<li><a title="pypesandfilters.pipe.BasePipe" href="#pypesandfilters.pipe.BasePipe">BasePipe</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="pipesandfilters.pipe.Pipe.getId"><code class="name flex">
+<dt id="pypesandfilters.pipe.Pipe.getId"><code class="name flex">
 <span>def <span class="ident">getId</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -381,7 +381,7 @@ def run(self):
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L126-L135" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L126-L135" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getId(self):
     &#34;&#34;&#34;
@@ -395,7 +395,7 @@ def run(self):
     return self._BasePipe__id</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipe.Pipe.getIncomingFilter"><code class="name flex">
+<dt id="pypesandfilters.pipe.Pipe.getIncomingFilter"><code class="name flex">
 <span>def <span class="ident">getIncomingFilter</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -407,7 +407,7 @@ def run(self):
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L115-L124" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L115-L124" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingFilter(self):
     &#34;&#34;&#34;
@@ -421,7 +421,7 @@ def run(self):
     return self._BasePipe__incomingFilter</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipe.Pipe.getOutgoingFilter"><code class="name flex">
+<dt id="pypesandfilters.pipe.Pipe.getOutgoingFilter"><code class="name flex">
 <span>def <span class="ident">getOutgoingFilter</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -433,7 +433,7 @@ def run(self):
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L93-L102" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L93-L102" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingFilter(self):
     &#34;&#34;&#34;
@@ -447,7 +447,7 @@ def run(self):
     return self._BasePipe__outgoingFilter</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipe.Pipe.setIncomingFilter"><code class="name flex">
+<dt id="pypesandfilters.pipe.Pipe.setIncomingFilter"><code class="name flex">
 <span>def <span class="ident">setIncomingFilter</span></span>(<span>self, incomingFilter)</span>
 </code></dt>
 <dd>
@@ -459,7 +459,7 @@ def run(self):
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L104-L113" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L104-L113" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def setIncomingFilter(self, incomingFilter):
     &#34;&#34;&#34;
@@ -473,7 +473,7 @@ def run(self):
     self._BasePipe__incomingFilter = incomingFilter</code></pre>
 </details>
 </dd>
-<dt id="pipesandfilters.pipe.Pipe.setOutgoingFilter"><code class="name flex">
+<dt id="pypesandfilters.pipe.Pipe.setOutgoingFilter"><code class="name flex">
 <span>def <span class="ident">setOutgoingFilter</span></span>(<span>self, outgoingFilter)</span>
 </code></dt>
 <dd>
@@ -484,7 +484,7 @@ def run(self):
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L83-L91" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/ef7557d55c2066ffb1487f1f605817e8ac16338a/pypesandfilters/pipe.py#L83-L91" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def setOutgoingFilter(self, outgoingFilter):
     &#34;&#34;&#34;
@@ -500,9 +500,9 @@ def run(self):
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="pipesandfilters.pipe.BasePipe" href="#pipesandfilters.pipe.BasePipe">BasePipe</a></b></code>:
+<li><code><b><a title="pypesandfilters.pipe.BasePipe" href="#pypesandfilters.pipe.BasePipe">BasePipe</a></b></code>:
 <ul class="hlist">
-<li><code><a title="pipesandfilters.pipe.BasePipe.run" href="#pipesandfilters.pipe.BasePipe.run">run</a></code></li>
+<li><code><a title="pypesandfilters.pipe.BasePipe.run" href="#pypesandfilters.pipe.BasePipe.run">run</a></code></li>
 </ul>
 </li>
 </ul>
@@ -518,7 +518,7 @@ def run(self):
 </header>
 <div class="gcse-search" style="height: 70px"
 data-as_oq="site:chiefsan.github.io inurl:github.com/chiefsan/pypes-and-filters"
-data-gaCategoryParameter="pipesandfilters.pipe">
+data-gaCategoryParameter="pypesandfilters.pipe">
 </div>
 <h1>Index</h1>
 <div class="toc">
@@ -527,25 +527,25 @@ data-gaCategoryParameter="pipesandfilters.pipe">
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pipesandfilters" href="index.html">pipesandfilters</a></code></li>
+<li><code><a title="pypesandfilters" href="index.html">pypesandfilters</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="pipesandfilters.pipe.BasePipe" href="#pipesandfilters.pipe.BasePipe">BasePipe</a></code></h4>
+<h4><code><a title="pypesandfilters.pipe.BasePipe" href="#pypesandfilters.pipe.BasePipe">BasePipe</a></code></h4>
 <ul class="">
-<li><code><a title="pipesandfilters.pipe.BasePipe.run" href="#pipesandfilters.pipe.BasePipe.run">run</a></code></li>
+<li><code><a title="pypesandfilters.pipe.BasePipe.run" href="#pypesandfilters.pipe.BasePipe.run">run</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="pipesandfilters.pipe.Pipe" href="#pipesandfilters.pipe.Pipe">Pipe</a></code></h4>
+<h4><code><a title="pypesandfilters.pipe.Pipe" href="#pypesandfilters.pipe.Pipe">Pipe</a></code></h4>
 <ul class="">
-<li><code><a title="pipesandfilters.pipe.Pipe.getId" href="#pipesandfilters.pipe.Pipe.getId">getId</a></code></li>
-<li><code><a title="pipesandfilters.pipe.Pipe.getIncomingFilter" href="#pipesandfilters.pipe.Pipe.getIncomingFilter">getIncomingFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipe.Pipe.getOutgoingFilter" href="#pipesandfilters.pipe.Pipe.getOutgoingFilter">getOutgoingFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipe.Pipe.setIncomingFilter" href="#pipesandfilters.pipe.Pipe.setIncomingFilter">setIncomingFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipe.Pipe.setOutgoingFilter" href="#pipesandfilters.pipe.Pipe.setOutgoingFilter">setOutgoingFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipe.Pipe.getId" href="#pypesandfilters.pipe.Pipe.getId">getId</a></code></li>
+<li><code><a title="pypesandfilters.pipe.Pipe.getIncomingFilter" href="#pypesandfilters.pipe.Pipe.getIncomingFilter">getIncomingFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipe.Pipe.getOutgoingFilter" href="#pypesandfilters.pipe.Pipe.getOutgoingFilter">getOutgoingFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipe.Pipe.setIncomingFilter" href="#pypesandfilters.pipe.Pipe.setIncomingFilter">setIncomingFilter</a></code></li>
+<li><code><a title="pypesandfilters.pipe.Pipe.setOutgoingFilter" href="#pypesandfilters.pipe.Pipe.setOutgoingFilter">setOutgoingFilter</a></code></li>
 </ul>
 </li>
 </ul>
