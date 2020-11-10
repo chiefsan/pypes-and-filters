@@ -27,112 +27,143 @@
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L0-L103" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L0-L134" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import abc
 from multiprocessing import Pipe as mpPipe
 from multiprocessing.connection import wait
 
-# from pipestrategy import FIFO,LIFO
-
+from .pipestrategy import FIFO,LIFO
 
 class BasePipe(object, metaclass=abc.ABCMeta):
-    # Abstract class for pipes
-    pass
-    # @abc.abstractmethod
-    # def receive(self):
-    #     raise NotImplementedError(&#39;users must define receive to use this base class&#39;)
-    # @abc.abstractclassmethod
-    # def send(self,message):
-    #     raise NotImplementedError(&#39;users must define send to use this base class&#39;)
+    &#39;&#39;&#39;
+    Parameters
+    ----------
+        incomingFilter : BaseFilter
+            Filter from which pipe gets message.
 
-
-class Pipe(BasePipe):
-    &#34;&#34;&#34;Implements Pipe concept
-    Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.
-    Arguments:
-        incomingFilter(Filter) : Filter from which pipe gets message
-        outgoingFilter(Filter) : Filter to which pipe needs to send the message
-        strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)
-    &#34;&#34;&#34;
-
-    def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
-        self.id = id
-        self.InQueue, self.OutQueue = mpPipe()
-        self.InQueue = [self.InQueue]
-        self.OutQueue = [self.OutQueue]
-        self.incomingFilter = incomingFilter
-        self.outgoingFilter = outgoingFilter
-        reader, writer = mpPipe()
-        self.incomingFilter.addOutgoingConnection(writer)
-        self.incomingConnection = [reader]
-        reader, writer = mpPipe()
-        self.outgoingFilter.addIncomingConnection(reader)
-        self.outgoingConnection = [writer]
-        self.incomingFilter.addOutgoingPipe(self)
-        self.outgoingFilter.addIncomingPipe(self)
-        self.strategy = strategy
-
+        outgoingFilter : BaseFilter
+            Filter to which pipe needs to send the message.
+            
+        strategy : PipeStrategy
+            Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO).
+    &#39;&#39;&#39;
+    @abc.abstractmethod
     def run(self):
         &#34;&#34;&#34;
-        Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
+        Get messages from the incomingFilter,then apply the pipe strategy to it, and finally send them to the outgoingFilter.
         &#34;&#34;&#34;
-        while self.incomingConnection:
-            Inputs = []
-            for r in wait(self.incomingConnection):
+        raise NotImplementedError(&#39;to be implemented by children&#39;)
+
+    def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
+        self.__id = id
+        self.__inQueue, self.__outQueue = mpPipe()
+        self.__inQueue = [self.__inQueue]
+        self.__outQueue = [self.__outQueue]
+        self.__incomingFilter = incomingFilter
+        self.__outgoingFilter = outgoingFilter
+        reader, writer = mpPipe()
+        self.__incomingFilter.addOutgoingConnection(writer)
+        self.__incomingConnection = [reader]
+        reader, writer = mpPipe()
+        self.__outgoingFilter.addIncomingConnection(reader)
+        self.__outgoingConnection = [writer]
+        self.__incomingFilter.addOutgoingPipe(self)
+        self.__outgoingFilter.addIncomingPipe(self)
+        self.__strategy = strategy
+
+class Pipe(BasePipe):
+    &#34;&#34;&#34;A standard pipe.
+
+    A pipe acts as a bridge to transfer message from one filter to another in Pipes and Filters architectural design pattern.
+    &#34;&#34;&#34;
+
+    def run(self):
+        while self._BasePipe__incomingConnection:
+            inputs = []
+            for reader in wait(self._BasePipe__incomingConnection):
                 try:
-                    input = r.recv()
-                    Inputs.append(input)
+                    input = reader.recv()
+                    inputs.append(input)
                 except EOFError:
-                    self.incomingConnection.remove(r)
+                    self._BasePipe__incomingConnection.remove(reader)
                 else:
                     print(&#34;Received input from Incoming Filter&#34;)
 
-        # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
-        if self.strategy:
-            Inputs = self.strategy.transformMessageQueue(Inputs)
+        # processing the input aggregate and choosing which element to send
+
+        if self._BasePipe__strategy:
+            inputs = self._BasePipe__strategy.transformMessageQueue(inputs)
         else:
-            Inputs = input
-        self.InQueue[0].send(Inputs)
-        self.InQueue[0].close()
+            inputs = input
+        self._BasePipe__inQueue[0].send(inputs)
+        self._BasePipe__inQueue[0].close()
 
-        while self.OutQueue:
-            for r in wait(self.OutQueue):
+        while self._BasePipe__outQueue:
+            for reader in wait(self._BasePipe__outQueue):
                 try:
-                    output = r.recv()
+                    output = reader.recv()
                 except EOFError:
-                    self.OutQueue.remove(r)
+                    self._BasePipe__outQueue.remove(reader)
                 else:
-                    print(&#34;Received output from InQueue&#34;)
+                    print(&#34;Received output from inQueue&#34;)
 
-        self.outgoingConnection[0].send(output)
-        self.outgoingConnection[0].close()
+        self._BasePipe__outgoingConnection[0].send(output)
+        self._BasePipe__outgoingConnection[0].close()
 
     def setOutgoingFilter(self, outgoingFilter):
         &#34;&#34;&#34;
-        Arguments:
-            outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+        Set the outgoing filter of the pipe.
+
+        Parameters
+        ----------
+            outgoingFilter : BaseFilter
         &#34;&#34;&#34;
-        self.outgoingFilter = outgoingFilter
+        self._BasePipe__outgoingFilter = outgoingFilter
 
     def getOutgoingFilter(self):
         &#34;&#34;&#34;
-        Function to get the outgoingFilter
+        Get the outgoing filter of the pipe.
+
+        Returns
+        -------
+            Filter
+                The outgoing filter.
         &#34;&#34;&#34;
-        return self.outgoingFilter
+        return self._BasePipe__outgoingFilter
 
     def setIncomingFilter(self, incomingFilter):
         &#34;&#34;&#34;
-        Arguments:
-            incomingFilter(Filter) : sets the Filter from which pipe receive the message
+        Set the filter from which the pipe receives the message.
+
+        Parameters
+        ----------
+            incomingFilter : BaseFilter
+                The incoming filter.
         &#34;&#34;&#34;
-        self.incomingFilter = incomingFilter
+        self._BasePipe__incomingFilter = incomingFilter
 
     def getIncomingFilter(self):
         &#34;&#34;&#34;
-        Function to get the incomingFilter
+        Get the incoming filter of the pipe.
+
+        Returns
+        -------
+            Filter
+                The incoming filter.
         &#34;&#34;&#34;
-        return self.incomingFilter</code></pre>
+        return self._BasePipe__incomingFilter
+
+    def getId(self):
+        &#34;&#34;&#34;
+        Get the id of the pipe.
+
+        Returns
+        -------
+            str
+                Pipe id
+        &#34;&#34;&#34;
+        return self._BasePipe__id</code></pre>
 </details>
 </section>
 <section>
@@ -146,125 +177,191 @@ class Pipe(BasePipe):
 <dl>
 <dt id="pipesandfilters.pipe.BasePipe"><code class="flex name class">
 <span>class <span class="ident">BasePipe</span></span>
+<span>(</span><span>id, incomingFilter, outgoingFilter, strategy=None)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><h2 id="parameters">Parameters</h2>
+<pre><code>incomingFilter : BaseFilter
+    Filter from which pipe gets message.
+
+outgoingFilter : BaseFilter
+    Filter to which pipe needs to send the message.
+
+strategy : PipeStrategy
+    Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO).
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L8-L10" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L7-L42" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class BasePipe(object, metaclass=abc.ABCMeta):
-    # Abstract class for pipes
-    pass</code></pre>
+    &#39;&#39;&#39;
+    Parameters
+    ----------
+        incomingFilter : BaseFilter
+            Filter from which pipe gets message.
+
+        outgoingFilter : BaseFilter
+            Filter to which pipe needs to send the message.
+            
+        strategy : PipeStrategy
+            Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO).
+    &#39;&#39;&#39;
+    @abc.abstractmethod
+    def run(self):
+        &#34;&#34;&#34;
+        Get messages from the incomingFilter,then apply the pipe strategy to it, and finally send them to the outgoingFilter.
+        &#34;&#34;&#34;
+        raise NotImplementedError(&#39;to be implemented by children&#39;)
+
+    def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
+        self.__id = id
+        self.__inQueue, self.__outQueue = mpPipe()
+        self.__inQueue = [self.__inQueue]
+        self.__outQueue = [self.__outQueue]
+        self.__incomingFilter = incomingFilter
+        self.__outgoingFilter = outgoingFilter
+        reader, writer = mpPipe()
+        self.__incomingFilter.addOutgoingConnection(writer)
+        self.__incomingConnection = [reader]
+        reader, writer = mpPipe()
+        self.__outgoingFilter.addIncomingConnection(reader)
+        self.__outgoingConnection = [writer]
+        self.__incomingFilter.addOutgoingPipe(self)
+        self.__outgoingFilter.addIncomingPipe(self)
+        self.__strategy = strategy</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="pipesandfilters.pipe.Pipe" href="#pipesandfilters.pipe.Pipe">Pipe</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pipesandfilters.pipe.BasePipe.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get messages from the incomingFilter,then apply the pipe strategy to it, and finally send them to the outgoingFilter.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L20-L25" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">@abc.abstractmethod
+def run(self):
+    &#34;&#34;&#34;
+    Get messages from the incomingFilter,then apply the pipe strategy to it, and finally send them to the outgoingFilter.
+    &#34;&#34;&#34;
+    raise NotImplementedError(&#39;to be implemented by children&#39;)</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="pipesandfilters.pipe.Pipe"><code class="flex name class">
 <span>class <span class="ident">Pipe</span></span>
 <span>(</span><span>id, incomingFilter, outgoingFilter, strategy=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Implements Pipe concept
-Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.</p>
-<h2 id="arguments">Arguments</h2>
-<p>incomingFilter(Filter) : Filter from which pipe gets message
-outgoingFilter(Filter) : Filter to which pipe needs to send the message
-strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)</p></div>
+<div class="desc"><p>A standard pipe.</p>
+<p>A pipe acts as a bridge to transfer message from one filter to another in Pipes and Filters architectural design pattern.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L19-L104" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L44-L135" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class Pipe(BasePipe):
-    &#34;&#34;&#34;Implements Pipe concept
-    Pipe acts as a bridge to transfer message from one filter to another in Pipes and Filter architectural design pattern.
-    Arguments:
-        incomingFilter(Filter) : Filter from which pipe gets message
-        outgoingFilter(Filter) : Filter to which pipe needs to send the message
-        strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO)
+    &#34;&#34;&#34;A standard pipe.
+
+    A pipe acts as a bridge to transfer message from one filter to another in Pipes and Filters architectural design pattern.
     &#34;&#34;&#34;
 
-    def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
-        self.id = id
-        self.InQueue, self.OutQueue = mpPipe()
-        self.InQueue = [self.InQueue]
-        self.OutQueue = [self.OutQueue]
-        self.incomingFilter = incomingFilter
-        self.outgoingFilter = outgoingFilter
-        reader, writer = mpPipe()
-        self.incomingFilter.addOutgoingConnection(writer)
-        self.incomingConnection = [reader]
-        reader, writer = mpPipe()
-        self.outgoingFilter.addIncomingConnection(reader)
-        self.outgoingConnection = [writer]
-        self.incomingFilter.addOutgoingPipe(self)
-        self.outgoingFilter.addIncomingPipe(self)
-        self.strategy = strategy
-
     def run(self):
-        &#34;&#34;&#34;
-        Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
-        &#34;&#34;&#34;
-        while self.incomingConnection:
-            Inputs = []
-            for r in wait(self.incomingConnection):
+        while self._BasePipe__incomingConnection:
+            inputs = []
+            for reader in wait(self._BasePipe__incomingConnection):
                 try:
-                    input = r.recv()
-                    Inputs.append(input)
+                    input = reader.recv()
+                    inputs.append(input)
                 except EOFError:
-                    self.incomingConnection.remove(r)
+                    self._BasePipe__incomingConnection.remove(reader)
                 else:
                     print(&#34;Received input from Incoming Filter&#34;)
 
-        # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
-        if self.strategy:
-            Inputs = self.strategy.transformMessageQueue(Inputs)
+        # processing the input aggregate and choosing which element to send
+
+        if self._BasePipe__strategy:
+            inputs = self._BasePipe__strategy.transformMessageQueue(inputs)
         else:
-            Inputs = input
-        self.InQueue[0].send(Inputs)
-        self.InQueue[0].close()
+            inputs = input
+        self._BasePipe__inQueue[0].send(inputs)
+        self._BasePipe__inQueue[0].close()
 
-        while self.OutQueue:
-            for r in wait(self.OutQueue):
+        while self._BasePipe__outQueue:
+            for reader in wait(self._BasePipe__outQueue):
                 try:
-                    output = r.recv()
+                    output = reader.recv()
                 except EOFError:
-                    self.OutQueue.remove(r)
+                    self._BasePipe__outQueue.remove(reader)
                 else:
-                    print(&#34;Received output from InQueue&#34;)
+                    print(&#34;Received output from inQueue&#34;)
 
-        self.outgoingConnection[0].send(output)
-        self.outgoingConnection[0].close()
+        self._BasePipe__outgoingConnection[0].send(output)
+        self._BasePipe__outgoingConnection[0].close()
 
     def setOutgoingFilter(self, outgoingFilter):
         &#34;&#34;&#34;
-        Arguments:
-            outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+        Set the outgoing filter of the pipe.
+
+        Parameters
+        ----------
+            outgoingFilter : BaseFilter
         &#34;&#34;&#34;
-        self.outgoingFilter = outgoingFilter
+        self._BasePipe__outgoingFilter = outgoingFilter
 
     def getOutgoingFilter(self):
         &#34;&#34;&#34;
-        Function to get the outgoingFilter
+        Get the outgoing filter of the pipe.
+
+        Returns
+        -------
+            Filter
+                The outgoing filter.
         &#34;&#34;&#34;
-        return self.outgoingFilter
+        return self._BasePipe__outgoingFilter
 
     def setIncomingFilter(self, incomingFilter):
         &#34;&#34;&#34;
-        Arguments:
-            incomingFilter(Filter) : sets the Filter from which pipe receive the message
+        Set the filter from which the pipe receives the message.
+
+        Parameters
+        ----------
+            incomingFilter : BaseFilter
+                The incoming filter.
         &#34;&#34;&#34;
-        self.incomingFilter = incomingFilter
+        self._BasePipe__incomingFilter = incomingFilter
 
     def getIncomingFilter(self):
         &#34;&#34;&#34;
-        Function to get the incomingFilter
+        Get the incoming filter of the pipe.
+
+        Returns
+        -------
+            Filter
+                The incoming filter.
         &#34;&#34;&#34;
-        return self.incomingFilter</code></pre>
+        return self._BasePipe__incomingFilter
+
+    def getId(self):
+        &#34;&#34;&#34;
+        Get the id of the pipe.
+
+        Returns
+        -------
+            str
+                Pipe id
+        &#34;&#34;&#34;
+        return self._BasePipe__id</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -272,125 +369,143 @@ strategy(PipeStrategy) : Strategy to reorder the messages present in pipe before
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="pipesandfilters.pipe.Pipe.getId"><code class="name flex">
+<span>def <span class="ident">getId</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the id of the pipe.</p>
+<h2 id="returns">Returns</h2>
+<pre><code>str
+    Pipe id
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L126-L135" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">def getId(self):
+    &#34;&#34;&#34;
+    Get the id of the pipe.
+
+    Returns
+    -------
+        str
+            Pipe id
+    &#34;&#34;&#34;
+    return self._BasePipe__id</code></pre>
+</details>
+</dd>
 <dt id="pipesandfilters.pipe.Pipe.getIncomingFilter"><code class="name flex">
 <span>def <span class="ident">getIncomingFilter</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Function to get the incomingFilter</p></div>
+<div class="desc"><p>Get the incoming filter of the pipe.</p>
+<h2 id="returns">Returns</h2>
+<pre><code>Filter
+    The incoming filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L100-L104" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L115-L124" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingFilter(self):
     &#34;&#34;&#34;
-    Function to get the incomingFilter
+    Get the incoming filter of the pipe.
+
+    Returns
+    -------
+        Filter
+            The incoming filter.
     &#34;&#34;&#34;
-    return self.incomingFilter</code></pre>
+    return self._BasePipe__incomingFilter</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.pipe.Pipe.getOutgoingFilter"><code class="name flex">
 <span>def <span class="ident">getOutgoingFilter</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Function to get the outgoingFilter</p></div>
+<div class="desc"><p>Get the outgoing filter of the pipe.</p>
+<h2 id="returns">Returns</h2>
+<pre><code>Filter
+    The outgoing filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L87-L91" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L93-L102" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingFilter(self):
     &#34;&#34;&#34;
-    Function to get the outgoingFilter
-    &#34;&#34;&#34;
-    return self.outgoingFilter</code></pre>
-</details>
-</dd>
-<dt id="pipesandfilters.pipe.Pipe.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L45-L78" class="git-link">Browse git</a>
-</summary>
-<pre><code class="python">def run(self):
-    &#34;&#34;&#34;
-    Gets message from the incomingFilter and apply strategy to it and sends to outgoingFilter
-    &#34;&#34;&#34;
-    while self.incomingConnection:
-        Inputs = []
-        for r in wait(self.incomingConnection):
-            try:
-                input = r.recv()
-                Inputs.append(input)
-            except EOFError:
-                self.incomingConnection.remove(r)
-            else:
-                print(&#34;Received input from Incoming Filter&#34;)
+    Get the outgoing filter of the pipe.
 
-    # PROCESSING THE INPUT AND PICK WHICH INPUT TO SEND
-    if self.strategy:
-        Inputs = self.strategy.transformMessageQueue(Inputs)
-    else:
-        Inputs = input
-    self.InQueue[0].send(Inputs)
-    self.InQueue[0].close()
-
-    while self.OutQueue:
-        for r in wait(self.OutQueue):
-            try:
-                output = r.recv()
-            except EOFError:
-                self.OutQueue.remove(r)
-            else:
-                print(&#34;Received output from InQueue&#34;)
-
-    self.outgoingConnection[0].send(output)
-    self.outgoingConnection[0].close()</code></pre>
+    Returns
+    -------
+        Filter
+            The outgoing filter.
+    &#34;&#34;&#34;
+    return self._BasePipe__outgoingFilter</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.pipe.Pipe.setIncomingFilter"><code class="name flex">
 <span>def <span class="ident">setIncomingFilter</span></span>(<span>self, incomingFilter)</span>
 </code></dt>
 <dd>
-<div class="desc"><h2 id="arguments">Arguments</h2>
-<p>incomingFilter(Filter) : sets the Filter from which pipe receive the message</p></div>
+<div class="desc"><p>Set the filter from which the pipe receives the message.</p>
+<h2 id="parameters">Parameters</h2>
+<pre><code>incomingFilter : BaseFilter
+    The incoming filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L93-L98" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L104-L113" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def setIncomingFilter(self, incomingFilter):
     &#34;&#34;&#34;
-    Arguments:
-        incomingFilter(Filter) : sets the Filter from which pipe receive the message
+    Set the filter from which the pipe receives the message.
+
+    Parameters
+    ----------
+        incomingFilter : BaseFilter
+            The incoming filter.
     &#34;&#34;&#34;
-    self.incomingFilter = incomingFilter</code></pre>
+    self._BasePipe__incomingFilter = incomingFilter</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.pipe.Pipe.setOutgoingFilter"><code class="name flex">
 <span>def <span class="ident">setOutgoingFilter</span></span>(<span>self, outgoingFilter)</span>
 </code></dt>
 <dd>
-<div class="desc"><h2 id="arguments">Arguments</h2>
-<p>outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message</p></div>
+<div class="desc"><p>Set the outgoing filter of the pipe.</p>
+<h2 id="parameters">Parameters</h2>
+<pre><code>outgoingFilter : BaseFilter
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipe.py#L80-L85" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipe.py#L83-L91" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def setOutgoingFilter(self, outgoingFilter):
     &#34;&#34;&#34;
-    Arguments:
-        outgoingFilter(Filter) : sets the Filter to which pipe needs to send the message
+    Set the outgoing filter of the pipe.
+
+    Parameters
+    ----------
+        outgoingFilter : BaseFilter
     &#34;&#34;&#34;
-    self.outgoingFilter = outgoingFilter</code></pre>
+    self._BasePipe__outgoingFilter = outgoingFilter</code></pre>
 </details>
 </dd>
 </dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pipesandfilters.pipe.BasePipe" href="#pipesandfilters.pipe.BasePipe">BasePipe</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pipesandfilters.pipe.BasePipe.run" href="#pipesandfilters.pipe.BasePipe.run">run</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -419,13 +534,16 @@ data-gaCategoryParameter="pipesandfilters.pipe">
 <ul>
 <li>
 <h4><code><a title="pipesandfilters.pipe.BasePipe" href="#pipesandfilters.pipe.BasePipe">BasePipe</a></code></h4>
+<ul class="">
+<li><code><a title="pipesandfilters.pipe.BasePipe.run" href="#pipesandfilters.pipe.BasePipe.run">run</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="pipesandfilters.pipe.Pipe" href="#pipesandfilters.pipe.Pipe">Pipe</a></code></h4>
 <ul class="">
+<li><code><a title="pipesandfilters.pipe.Pipe.getId" href="#pipesandfilters.pipe.Pipe.getId">getId</a></code></li>
 <li><code><a title="pipesandfilters.pipe.Pipe.getIncomingFilter" href="#pipesandfilters.pipe.Pipe.getIncomingFilter">getIncomingFilter</a></code></li>
 <li><code><a title="pipesandfilters.pipe.Pipe.getOutgoingFilter" href="#pipesandfilters.pipe.Pipe.getOutgoingFilter">getOutgoingFilter</a></code></li>
-<li><code><a title="pipesandfilters.pipe.Pipe.run" href="#pipesandfilters.pipe.Pipe.run">run</a></code></li>
 <li><code><a title="pipesandfilters.pipe.Pipe.setIncomingFilter" href="#pipesandfilters.pipe.Pipe.setIncomingFilter">setIncomingFilter</a></code></li>
 <li><code><a title="pipesandfilters.pipe.Pipe.setOutgoingFilter" href="#pipesandfilters.pipe.Pipe.setOutgoingFilter">setOutgoingFilter</a></code></li>
 </ul>

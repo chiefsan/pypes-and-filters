@@ -27,7 +27,7 @@
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipestrategy.py#L0-L39" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipestrategy.py#L0-L46" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import abc
 
@@ -41,20 +41,26 @@ class PipeStrategy(object, metaclass=abc.ABCMeta):
     @abc.abstractclassmethod
     def transformMessageQueue(self, messages):
         &#34;&#34;&#34;
-        Arguments:
-            messages(List):Input queue got from incomingFilter
-        Return:
-            messages(List): Processed the incomingFilter message using user&#39;s logic
+        Parameters
+        ----------
+            messages : List
+                Input queue got from incomingFilter
+
+        Returns
+        -------
+            messages : List
+                Processed the incomingFilter message using user&#39;s logic
         &#34;&#34;&#34;
         raise NotImplementedError(
-            &#34;transformMessageQueue should be defined in base clase&#34;
+            &#34;children should implement it&#34;
         )
 
 
 class FIFO(PipeStrategy):
     &#34;&#34;&#34;First In First Out strategy
+
     It makes the message which is first received from the pipe through incomingFilter
-    should be sent first to the outgoingFilter
+    should be sent first to the outgoingFilter.
     &#34;&#34;&#34;
 
     def transformMessageQueue(self, messages):
@@ -63,8 +69,9 @@ class FIFO(PipeStrategy):
 
 class LIFO(PipeStrategy):
     &#34;&#34;&#34;Last in First Out strategy
+
     It makes the message which is first received from the pipe through incomingFilter
-    should be sent last to the outgoingFilter    
+    should be sent last to the outgoingFilter    .
     &#34;&#34;&#34;
 
     def transformMessageQueue(self, messages):
@@ -84,18 +91,19 @@ class LIFO(PipeStrategy):
 <span>class <span class="ident">FIFO</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>First In First Out strategy
-It makes the message which is first received from the pipe through incomingFilter
-should be sent first to the outgoingFilter</p></div>
+<div class="desc"><p>First In First Out strategy</p>
+<p>It makes the message which is first received from the pipe through incomingFilter
+should be sent first to the outgoingFilter.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipestrategy.py#L23-L30" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipestrategy.py#L28-L36" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class FIFO(PipeStrategy):
     &#34;&#34;&#34;First In First Out strategy
+
     It makes the message which is first received from the pipe through incomingFilter
-    should be sent first to the outgoingFilter
+    should be sent first to the outgoingFilter.
     &#34;&#34;&#34;
 
     def transformMessageQueue(self, messages):
@@ -118,18 +126,20 @@ should be sent first to the outgoingFilter</p></div>
 <span>class <span class="ident">LIFO</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Last in First Out strategy
-It makes the message which is first received from the pipe through incomingFilter
-should be sent last to the outgoingFilter</p></div>
+<div class="desc"><p>Last in First Out strategy</p>
+<p>It makes the message which is first received from the pipe through incomingFilter
+should be sent last to the outgoingFilter
+.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipestrategy.py#L33-L40" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipestrategy.py#L39-L47" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class LIFO(PipeStrategy):
     &#34;&#34;&#34;Last in First Out strategy
+
     It makes the message which is first received from the pipe through incomingFilter
-    should be sent last to the outgoingFilter    
+    should be sent last to the outgoingFilter    .
     &#34;&#34;&#34;
 
     def transformMessageQueue(self, messages):
@@ -158,7 +168,7 @@ by which users can define how the message need to be transformed before sending 
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipestrategy.py#L4-L20" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipestrategy.py#L4-L25" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class PipeStrategy(object, metaclass=abc.ABCMeta):
     &#34;&#34;&#34;Abstract class for PipeStrategy
@@ -169,13 +179,18 @@ by which users can define how the message need to be transformed before sending 
     @abc.abstractclassmethod
     def transformMessageQueue(self, messages):
         &#34;&#34;&#34;
-        Arguments:
-            messages(List):Input queue got from incomingFilter
-        Return:
-            messages(List): Processed the incomingFilter message using user&#39;s logic
+        Parameters
+        ----------
+            messages : List
+                Input queue got from incomingFilter
+
+        Returns
+        -------
+            messages : List
+                Processed the incomingFilter message using user&#39;s logic
         &#34;&#34;&#34;
         raise NotImplementedError(
-            &#34;transformMessageQueue should be defined in base clase&#34;
+            &#34;children should implement it&#34;
         )</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -189,25 +204,34 @@ by which users can define how the message need to be transformed before sending 
 <span>def <span class="ident">transformMessageQueue</span></span>(<span>messages)</span>
 </code></dt>
 <dd>
-<div class="desc"><h2 id="arguments">Arguments</h2>
-<p>messages(List):Input queue got from incomingFilter</p>
-<h2 id="return">Return</h2>
-<p>messages(List): Processed the incomingFilter message using user's logic</p></div>
+<div class="desc"><h2 id="parameters">Parameters</h2>
+<pre><code>messages : List
+    Input queue got from incomingFilter
+</code></pre>
+<h2 id="returns">Returns</h2>
+<pre><code>messages : List
+    Processed the incomingFilter message using user's logic
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipestrategy.py#L10-L20" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipestrategy.py#L10-L25" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">@abc.abstractclassmethod
 def transformMessageQueue(self, messages):
     &#34;&#34;&#34;
-    Arguments:
-        messages(List):Input queue got from incomingFilter
-    Return:
-        messages(List): Processed the incomingFilter message using user&#39;s logic
+    Parameters
+    ----------
+        messages : List
+            Input queue got from incomingFilter
+
+    Returns
+    -------
+        messages : List
+            Processed the incomingFilter message using user&#39;s logic
     &#34;&#34;&#34;
     raise NotImplementedError(
-        &#34;transformMessageQueue should be defined in base clase&#34;
+        &#34;children should implement it&#34;
     )</code></pre>
 </details>
 </dd>

@@ -42,7 +42,7 @@ pip install .
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/__init__.py#L0-L30" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/__init__.py#L0-L31" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">&#39;&#39;&#39;
 _Pypes and Filters_ is a package for implementing the pipes and filters architectural pattern.
@@ -71,6 +71,7 @@ pip install .
 &#39;&#39;&#39;
 
 import abc
+from .pipestrategy import PipeStrategy
 from .pipe import Pipe
 from .message import Message
 from .filter import BaseFilter, Filter, SourceFilter, SinkFilter

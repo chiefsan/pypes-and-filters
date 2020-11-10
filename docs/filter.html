@@ -27,7 +27,7 @@
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L0-L282" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L0-L295" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import abc
 import typing
@@ -39,274 +39,287 @@ from .message import Message
 
 class BaseFilter(object, metaclass=abc.ABCMeta):
     &#34;&#34;&#34;
-    Abstract base Filter class.
+    Abstract base filter class.
     
     Receives messages and preforms required processing on them before sending them to appropriate destinations.
     &#34;&#34;&#34;
 
     @abc.abstractmethod
     def run(self):
-        &#34;&#34;&#34;Abstract method that determines how the Filter executes the required process when spawned. 
+        &#34;&#34;&#34;Abstract method that determines how the filter executes the required process when spawned. 
 
         It is responsible for receiving messages from incoming pipes, if any, and sending messages to outgoing pipes, if any.
         &#34;&#34;&#34;
-        raise NotImplementedError(&#34;not nececssary at the moment&#34;)
+        raise NotImplementedError(&#34;children should implement&#34;)
 
+    @abc.abstractmethod
     def __init__(self, id: str, filterProcess):
         &#34;&#34;&#34;
 
         Parameters
         ----------
-        id : str
-            Identifier for the Filter. 
-        filterProcess : Filter
-            The calllable object (function) that is applied by the Filter on the message.
+            id : str
+                Identifier for the filter. 
+            filterProcess : function
+                The calllable object (function) that is applied by the filter on the message.
         &#34;&#34;&#34;
-        pass
+        raise NotImplementedError(&#34;children should implement&#34;)
 
     def process(self, data):
         &#34;&#34;&#34;Apply `filterProcess` on the message.
         
         Parameters
         ----------
-        data : object
-            The object on which `filterProcess` is applied.
+            data : object
+                The object on which `filterProcess` is applied.
         &#34;&#34;&#34;
-        output = self.filterProcess(data)
+        output = self.__filterProcess(data)
         return output
+    
+    def getId(self):
+        &#34;&#34;&#34;
+        Get the id of the filter.
+
+        Returns
+        -------
+            str
+                The id of the filter.
+        &#34;&#34;&#34;
+        return self.__id
 
 
 class Filter(BaseFilter):
-    &#34;&#34;&#34;A Standard Filter. 
+    &#34;&#34;&#34;A standard filter. 
     
     A component in the pipeline that has both incoming and outgoing pipes.
     &#34;&#34;&#34;
 
     def __init__(self, id: str, filterProcess):
-        self.outgoingPipes = []
-        self.incomingPipes = []
-        self.incomingConnections = []
-        self.outgoingConnections = []
-        self.filterProcess = filterProcess
-        self.id = id
+        self.__outgoingPipes = []
+        self.__incomingPipes = []
+        self.__incomingConnections = []
+        self.__outgoingConnections = []
+        self._BaseFilter__filterProcess = filterProcess
+        self.__id = id
 
     def addOutgoingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an outgoing pipe to the Filter.
+        &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the outgoing end of the Filter.
+            pipe : Pipe
+                The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingPipes.append(pipe)
+        self.__outgoingPipes.append(pipe)
 
     def getOutgoingPipes(self):
-        &#34;&#34;&#34; Return outgoing pipes of the Filter.
+        &#34;&#34;&#34; Get outgoing pipes of the filter.
 
         Returns
         -------
-        Pipe[]
-            The pipes at the outgoing end of the Filter.
+            Pipe[]
+                The pipes at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingPipes
+        return self.__outgoingPipes
 
     def getIncomingPipes(self):
-        &#34;&#34;&#34; Return incoming pipes of the Filter.
+        &#34;&#34;&#34; Get incoming pipes of the filter.
 
         Returns
         -------
-        Pipe[]
-            The pipes at the incoming end of the Filter.
+            Pipe[]
+                The pipes at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingPipes
+        return self.__incomingPipes
 
     def addIncomingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an incoming pipe to the Filter.
+        &#34;&#34;&#34; Add an incoming pipe to the filter.
 
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the incoming end of the Filterss.
+            pipe : Pipe
+                The pipe connected to the incoming end of the filterss.
         &#34;&#34;&#34;
-        self.incomingPipes.append(pipe)
+        self.__incomingPipes.append(pipe)
 
     def getIncomingConnections(self):
-        &#34;&#34;&#34; Return incoming connection objects of the Filter.
+        &#34;&#34;&#34; Get incoming connection objects of the filter.
 
         Returns
         -------
-        Connection[]
-            The connections at the incoming end of the Filter.
+            Connection[]
+                The connections at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingConnections
+        return self.__incomingConnections
 
     def addIncomingConnection(self, incomingConnection):
-        &#34;&#34;&#34; Add an incoming connection object to the Filter.
+        &#34;&#34;&#34; Add an incoming connection object to the filter.
 
         Parameters
         ----------
-        incomingConnection : Connection
-            The connection object at the incoming end of the Filter.
+            incomingConnection : Connection
+                The connection object at the incoming end of the filter.
         &#34;&#34;&#34;
-        self.incomingConnections.append(incomingConnection)
+        self.__incomingConnections.append(incomingConnection)
 
     def getOutgoingConnections(self):
-        &#34;&#34;&#34; Return outgoing connection objects of the Filter.
+        &#34;&#34;&#34; Get outgoing connection objects of the filter.
 
         Returns
         -------
-        Connection[]
-            The connections at the outgoing end of the Filter.
+            Connection[]
+                The connections at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingConnections
+        return self.__outgoingConnections
 
     def addOutgoingConnection(self, outgoingConnection):
-        &#34;&#34;&#34; Add an outgoing connection object to the Filter.
+        &#34;&#34;&#34; Add an outgoing connection object to the filter.
 
         Parameters
         ----------
-        outgoingConnection : Connection
-            The connection object at the outgoing end of the Filter.
+            outgoingConnection : Connection
+                The connection object at the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingConnections.append(outgoingConnection)
+        self.__outgoingConnections.append(outgoingConnection)
 
     def run(self):
-        while self.incomingConnections:
-            for r in wait(self.incomingConnections):
+        while self.__incomingConnections:
+            for reader in wait(self.__incomingConnections):
                 try:
-                    input = r.recv()
+                    input = reader.recv()
                 except EOFError:
-                    self.incomingConnections.remove(r)
+                    self.__incomingConnections.remove(reader)
                 else:
                     print(&#34;Received&#34;)
         output = self.process(input)
-        for conn in self.outgoingConnections:
+        for conn in self.__outgoingConnections:
             conn.send(output)
             conn.close()
 
 
 class SourceFilter(BaseFilter):
     &#34;&#34;&#34;
-    A Source Filter. 
+    A source filter. 
     
     A component in the pipeline that has outgoing pipes but no incoming pipes.
     &#34;&#34;&#34;
 
     def __init__(self, id: str, filterProcess):
-        self.outgoingPipes = []
-        self.outgoingConnections = []
-        self.filterProcess = filterProcess
-        self.id = id
+        self.__outgoingPipes = []
+        self.__outgoingConnections = []
+        self._BaseFilter__filterProcess = filterProcess
+        self.__id = id
 
     def getOutgoingPipes(self):
-        &#34;&#34;&#34; Return outgoing pipes of the Filter.
+        &#34;&#34;&#34; Get outgoing pipes of the filter.
 
         Returns
         -------
-        Pipe[]
-            The pipes at the outgoing end of the Filter.
+            Pipe[]
+                The pipes at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingPipes
+        return self.__outgoingPipes
 
     def addOutgoingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an outgoing pipe to the Filter.
+        &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the outgoing end of the Filter.
+            pipe : Pipe
+                The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingPipes.append(pipe)
+        self.__outgoingPipes.append(pipe)
 
     def getOutgoingConnections(self):
-        &#34;&#34;&#34; Return outgoing connection objects of the Filter.
+        &#34;&#34;&#34; Get outgoing connection objects of the filter.
 
         Returns
         -------
-        Connection[]
-            The connections at the outgoing end of the Filter.
+            Connection[]
+                The connections at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingConnections
+        return self.__outgoingConnections
 
     def addOutgoingConnection(self, outgoingConnection):
-        &#34;&#34;&#34; Add an outgoing connection object to the Filter.
+        &#34;&#34;&#34; Add an outgoing connection object to the filter.
         
         Parameters
         ----------
-        outgoingConnection : Connection
-            The connection object at the outgoing end of the Filter.
+            outgoingConnection : Connection
+                The connection object at the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingConnections.append(outgoingConnection)
+        self.__outgoingConnections.append(outgoingConnection)
 
     def run(self, input):
         output = self.process(input)
-        for conn in self.outgoingConnections:
+        for conn in self.__outgoingConnections:
             conn.send(output)
             conn.close()
 
 
 class SinkFilter(BaseFilter):
     &#34;&#34;&#34;
-    A Sink Filter. 
+    A sink filter. 
+
     A component in the pipeline that has incoming pipes but no outgoing pipes.
     &#34;&#34;&#34;
 
     def __init__(self, id: str, filterProcess):
-        self.incomingPipes = []
-        self.incomingConnections = []
-        self.filterProcess = filterProcess
-        self.id = id
+        self.__incomingPipes = []
+        self.__incomingConnections = []
+        self._BaseFilter__filterProcess = filterProcess
+        self.__id = id
 
     def addIncomingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an incoming pipe to the Filter.
+        &#34;&#34;&#34; Add an incoming pipe to the filter.
         
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the incoming end of the Filter.
+            pipe : Pipe
+                The pipe connected to the incoming end of the filter.
         &#34;&#34;&#34;
-        self.incomingPipes.append(pipe)
+        self.__incomingPipes.append(pipe)
 
     def getIncomingPipes(self):
-        &#34;&#34;&#34; Return incoming pipes of the Filter.
+        &#34;&#34;&#34; Get incoming pipes of the filter.
         
         Returns
         -------
-        Pipe[]
-            The pipes at the incoming end of the Filter.
+            Pipe[]
+                The pipes at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingPipes
+        return self.__incomingPipes
 
     def getIncomingConnections(self):
-        &#34;&#34;&#34; Return incoming connection objects of the Filter.
+        &#34;&#34;&#34; Get incoming connection objects of the filter.
         
         Returns
         -------
-        Connection[]
-            The connections at the incoming end of the Filter.
+            Connection[]
+                The connections at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingConnections
+        return self.__incomingConnections
 
     def addIncomingConnection(self, incomingConnection):
-        &#34;&#34;&#34; Add an incoming connection object to the Filter.
+        &#34;&#34;&#34; Add an incoming connection object to the filter.
         
         Parameters
         ----------
-        incomingConnection : Connection
-            The connection object at the incoming end of the Filter.
+            incomingConnection : Connection
+                The connection object at the incoming end of the filter.
         &#34;&#34;&#34;
-        self.incomingConnections.append(incomingConnection)
+        self.__incomingConnections.append(incomingConnection)
 
     def run(self):
-        print(len(self.incomingConnections))
-        if len(self.incomingConnections) == 0:
+        print(len(self.__incomingConnections))
+        if len(self.__incomingConnections) == 0:
             print(&#34;No incoming connections yet!&#34;)
-        while self.incomingConnections:
-            for r in wait(self.incomingConnections):
+        while self.__incomingConnections:
+            for reader in wait(self.__incomingConnections):
                 try:
-                    input = r.recv()
+                    input = reader.recv()
                 except EOFError:
-                    self.incomingConnections.remove(r)
+                    self.__incomingConnections.remove(reader)
                 else:
                     print(&#34;Received&#34;)
         output = self.process(input)
@@ -328,57 +341,68 @@ class SinkFilter(BaseFilter):
 <span>(</span><span>id: str, filterProcess)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Abstract base Filter class.</p>
+<div class="desc"><p>Abstract base filter class.</p>
 <p>Receives messages and preforms required processing on them before sending them to appropriate destinations.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>id</code></strong> :&ensp;<code>str</code></dt>
-<dd>Identifier for the Filter.</dd>
-<dt><strong><code>filterProcess</code></strong> :&ensp;<code><a title="pipesandfilters.filter.Filter" href="#pipesandfilters.filter.Filter">Filter</a></code></dt>
-<dd>The calllable object (function) that is applied by the Filter on the message.</dd>
-</dl></div>
+<pre><code>id : str
+    Identifier for the filter. 
+filterProcess : function
+    The calllable object (function) that is applied by the filter on the message.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L9-L45" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L9-L57" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class BaseFilter(object, metaclass=abc.ABCMeta):
     &#34;&#34;&#34;
-    Abstract base Filter class.
+    Abstract base filter class.
     
     Receives messages and preforms required processing on them before sending them to appropriate destinations.
     &#34;&#34;&#34;
 
     @abc.abstractmethod
     def run(self):
-        &#34;&#34;&#34;Abstract method that determines how the Filter executes the required process when spawned. 
+        &#34;&#34;&#34;Abstract method that determines how the filter executes the required process when spawned. 
 
         It is responsible for receiving messages from incoming pipes, if any, and sending messages to outgoing pipes, if any.
         &#34;&#34;&#34;
-        raise NotImplementedError(&#34;not nececssary at the moment&#34;)
+        raise NotImplementedError(&#34;children should implement&#34;)
 
+    @abc.abstractmethod
     def __init__(self, id: str, filterProcess):
         &#34;&#34;&#34;
 
         Parameters
         ----------
-        id : str
-            Identifier for the Filter. 
-        filterProcess : Filter
-            The calllable object (function) that is applied by the Filter on the message.
+            id : str
+                Identifier for the filter. 
+            filterProcess : function
+                The calllable object (function) that is applied by the filter on the message.
         &#34;&#34;&#34;
-        pass
+        raise NotImplementedError(&#34;children should implement&#34;)
 
     def process(self, data):
         &#34;&#34;&#34;Apply `filterProcess` on the message.
         
         Parameters
         ----------
-        data : object
-            The object on which `filterProcess` is applied.
+            data : object
+                The object on which `filterProcess` is applied.
         &#34;&#34;&#34;
-        output = self.filterProcess(data)
-        return output</code></pre>
+        output = self.__filterProcess(data)
+        return output
+    
+    def getId(self):
+        &#34;&#34;&#34;
+        Get the id of the filter.
+
+        Returns
+        -------
+            str
+                The id of the filter.
+        &#34;&#34;&#34;
+        return self.__id</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -388,30 +412,55 @@ class SinkFilter(BaseFilter):
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="pipesandfilters.filter.BaseFilter.getId"><code class="name flex">
+<span>def <span class="ident">getId</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the id of the filter.</p>
+<h2 id="returns">Returns</h2>
+<pre><code>str
+    The id of the filter.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L48-L57" class="git-link">Browse git</a>
+</summary>
+<pre><code class="python">def getId(self):
+    &#34;&#34;&#34;
+    Get the id of the filter.
+
+    Returns
+    -------
+        str
+            The id of the filter.
+    &#34;&#34;&#34;
+    return self.__id</code></pre>
+</details>
+</dd>
 <dt id="pipesandfilters.filter.BaseFilter.process"><code class="name flex">
 <span>def <span class="ident">process</span></span>(<span>self, data)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Apply <code>filterProcess</code> on the message.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data</code></strong> :&ensp;<code>object</code></dt>
-<dd>The object on which <code>filterProcess</code> is applied.</dd>
-</dl></div>
+<pre><code>data : object
+    The object on which &lt;code&gt;filterProcess&lt;/code&gt; is applied.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L36-L45" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L37-L46" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def process(self, data):
     &#34;&#34;&#34;Apply `filterProcess` on the message.
     
     Parameters
     ----------
-    data : object
-        The object on which `filterProcess` is applied.
+        data : object
+            The object on which `filterProcess` is applied.
     &#34;&#34;&#34;
-    output = self.filterProcess(data)
+    output = self.__filterProcess(data)
     return output</code></pre>
 </details>
 </dd>
@@ -419,20 +468,20 @@ class SinkFilter(BaseFilter):
 <span>def <span class="ident">run</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Abstract method that determines how the Filter executes the required process when spawned. </p>
+<div class="desc"><p>Abstract method that determines how the filter executes the required process when spawned. </p>
 <p>It is responsible for receiving messages from incoming pipes, if any, and sending messages to outgoing pipes, if any.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L16-L22" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L16-L22" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">@abc.abstractmethod
 def run(self):
-    &#34;&#34;&#34;Abstract method that determines how the Filter executes the required process when spawned. 
+    &#34;&#34;&#34;Abstract method that determines how the filter executes the required process when spawned. 
 
     It is responsible for receiving messages from incoming pipes, if any, and sending messages to outgoing pipes, if any.
     &#34;&#34;&#34;
-    raise NotImplementedError(&#34;not nececssary at the moment&#34;)</code></pre>
+    raise NotImplementedError(&#34;children should implement&#34;)</code></pre>
 </details>
 </dd>
 </dl>
@@ -442,125 +491,124 @@ def run(self):
 <span>(</span><span>id: str, filterProcess)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A Standard Filter. </p>
+<div class="desc"><p>A standard filter. </p>
 <p>A component in the pipeline that has both incoming and outgoing pipes.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>id</code></strong> :&ensp;<code>str</code></dt>
-<dd>Identifier for the Filter.</dd>
-<dt><strong><code>filterProcess</code></strong> :&ensp;<code><a title="pipesandfilters.filter.Filter" href="#pipesandfilters.filter.Filter">Filter</a></code></dt>
-<dd>The calllable object (function) that is applied by the Filter on the message.</dd>
-</dl></div>
+<pre><code>id : str
+    Identifier for the filter. 
+filterProcess : function
+    The calllable object (function) that is applied by the filter on the message.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L48-L154" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L60-L166" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class Filter(BaseFilter):
-    &#34;&#34;&#34;A Standard Filter. 
+    &#34;&#34;&#34;A standard filter. 
     
     A component in the pipeline that has both incoming and outgoing pipes.
     &#34;&#34;&#34;
 
     def __init__(self, id: str, filterProcess):
-        self.outgoingPipes = []
-        self.incomingPipes = []
-        self.incomingConnections = []
-        self.outgoingConnections = []
-        self.filterProcess = filterProcess
-        self.id = id
+        self.__outgoingPipes = []
+        self.__incomingPipes = []
+        self.__incomingConnections = []
+        self.__outgoingConnections = []
+        self._BaseFilter__filterProcess = filterProcess
+        self.__id = id
 
     def addOutgoingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an outgoing pipe to the Filter.
+        &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the outgoing end of the Filter.
+            pipe : Pipe
+                The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingPipes.append(pipe)
+        self.__outgoingPipes.append(pipe)
 
     def getOutgoingPipes(self):
-        &#34;&#34;&#34; Return outgoing pipes of the Filter.
+        &#34;&#34;&#34; Get outgoing pipes of the filter.
 
         Returns
         -------
-        Pipe[]
-            The pipes at the outgoing end of the Filter.
+            Pipe[]
+                The pipes at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingPipes
+        return self.__outgoingPipes
 
     def getIncomingPipes(self):
-        &#34;&#34;&#34; Return incoming pipes of the Filter.
+        &#34;&#34;&#34; Get incoming pipes of the filter.
 
         Returns
         -------
-        Pipe[]
-            The pipes at the incoming end of the Filter.
+            Pipe[]
+                The pipes at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingPipes
+        return self.__incomingPipes
 
     def addIncomingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an incoming pipe to the Filter.
+        &#34;&#34;&#34; Add an incoming pipe to the filter.
 
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the incoming end of the Filterss.
+            pipe : Pipe
+                The pipe connected to the incoming end of the filterss.
         &#34;&#34;&#34;
-        self.incomingPipes.append(pipe)
+        self.__incomingPipes.append(pipe)
 
     def getIncomingConnections(self):
-        &#34;&#34;&#34; Return incoming connection objects of the Filter.
+        &#34;&#34;&#34; Get incoming connection objects of the filter.
 
         Returns
         -------
-        Connection[]
-            The connections at the incoming end of the Filter.
+            Connection[]
+                The connections at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingConnections
+        return self.__incomingConnections
 
     def addIncomingConnection(self, incomingConnection):
-        &#34;&#34;&#34; Add an incoming connection object to the Filter.
+        &#34;&#34;&#34; Add an incoming connection object to the filter.
 
         Parameters
         ----------
-        incomingConnection : Connection
-            The connection object at the incoming end of the Filter.
+            incomingConnection : Connection
+                The connection object at the incoming end of the filter.
         &#34;&#34;&#34;
-        self.incomingConnections.append(incomingConnection)
+        self.__incomingConnections.append(incomingConnection)
 
     def getOutgoingConnections(self):
-        &#34;&#34;&#34; Return outgoing connection objects of the Filter.
+        &#34;&#34;&#34; Get outgoing connection objects of the filter.
 
         Returns
         -------
-        Connection[]
-            The connections at the outgoing end of the Filter.
+            Connection[]
+                The connections at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingConnections
+        return self.__outgoingConnections
 
     def addOutgoingConnection(self, outgoingConnection):
-        &#34;&#34;&#34; Add an outgoing connection object to the Filter.
+        &#34;&#34;&#34; Add an outgoing connection object to the filter.
 
         Parameters
         ----------
-        outgoingConnection : Connection
-            The connection object at the outgoing end of the Filter.
+            outgoingConnection : Connection
+                The connection object at the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingConnections.append(outgoingConnection)
+        self.__outgoingConnections.append(outgoingConnection)
 
     def run(self):
-        while self.incomingConnections:
-            for r in wait(self.incomingConnections):
+        while self.__incomingConnections:
+            for reader in wait(self.__incomingConnections):
                 try:
-                    input = r.recv()
+                    input = reader.recv()
                 except EOFError:
-                    self.incomingConnections.remove(r)
+                    self.__incomingConnections.remove(reader)
                 else:
                     print(&#34;Received&#34;)
         output = self.process(input)
-        for conn in self.outgoingConnections:
+        for conn in self.__outgoingConnections:
             conn.send(output)
             conn.close()</code></pre>
 </details>
@@ -574,208 +622,200 @@ def run(self):
 <span>def <span class="ident">addIncomingConnection</span></span>(<span>self, incomingConnection)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an incoming connection object to the Filter.</p>
+<div class="desc"><p>Add an incoming connection object to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>incomingConnection</code></strong> :&ensp;<code>Connection</code></dt>
-<dd>The connection object at the incoming end of the Filter.</dd>
-</dl></div>
+<pre><code>incomingConnection : Connection
+    The connection object at the incoming end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L112-L120" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L124-L132" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addIncomingConnection(self, incomingConnection):
-    &#34;&#34;&#34; Add an incoming connection object to the Filter.
+    &#34;&#34;&#34; Add an incoming connection object to the filter.
 
     Parameters
     ----------
-    incomingConnection : Connection
-        The connection object at the incoming end of the Filter.
+        incomingConnection : Connection
+            The connection object at the incoming end of the filter.
     &#34;&#34;&#34;
-    self.incomingConnections.append(incomingConnection)</code></pre>
+    self.__incomingConnections.append(incomingConnection)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.Filter.addIncomingPipe"><code class="name flex">
 <span>def <span class="ident">addIncomingPipe</span></span>(<span>self, pipe: <a title="pipesandfilters.pipe.Pipe" href="pipe.html#pipesandfilters.pipe.Pipe">Pipe</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an incoming pipe to the Filter.</p>
+<div class="desc"><p>Add an incoming pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>pipe</code></strong> :&ensp;<code>Pipe</code></dt>
-<dd>The pipe connected to the incoming end of the Filterss.</dd>
-</dl></div>
+<pre><code>pipe : Pipe
+    The pipe connected to the incoming end of the filterss.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L92-L100" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L104-L112" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addIncomingPipe(self, pipe: Pipe):
-    &#34;&#34;&#34; Add an incoming pipe to the Filter.
+    &#34;&#34;&#34; Add an incoming pipe to the filter.
 
     Parameters
     ----------
-    pipe : Pipe
-        The pipe connected to the incoming end of the Filterss.
+        pipe : Pipe
+            The pipe connected to the incoming end of the filterss.
     &#34;&#34;&#34;
-    self.incomingPipes.append(pipe)</code></pre>
+    self.__incomingPipes.append(pipe)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.Filter.addOutgoingConnection"><code class="name flex">
 <span>def <span class="ident">addOutgoingConnection</span></span>(<span>self, outgoingConnection)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an outgoing connection object to the Filter.</p>
+<div class="desc"><p>Add an outgoing connection object to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>outgoingConnection</code></strong> :&ensp;<code>Connection</code></dt>
-<dd>The connection object at the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>outgoingConnection : Connection
+    The connection object at the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L132-L140" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L144-L152" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addOutgoingConnection(self, outgoingConnection):
-    &#34;&#34;&#34; Add an outgoing connection object to the Filter.
+    &#34;&#34;&#34; Add an outgoing connection object to the filter.
 
     Parameters
     ----------
-    outgoingConnection : Connection
-        The connection object at the outgoing end of the Filter.
+        outgoingConnection : Connection
+            The connection object at the outgoing end of the filter.
     &#34;&#34;&#34;
-    self.outgoingConnections.append(outgoingConnection)</code></pre>
+    self.__outgoingConnections.append(outgoingConnection)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.Filter.addOutgoingPipe"><code class="name flex">
 <span>def <span class="ident">addOutgoingPipe</span></span>(<span>self, pipe: <a title="pipesandfilters.pipe.Pipe" href="pipe.html#pipesandfilters.pipe.Pipe">Pipe</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an outgoing pipe to the Filter.</p>
+<div class="desc"><p>Add an outgoing pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>pipe</code></strong> :&ensp;<code>Pipe</code></dt>
-<dd>The pipe connected to the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>pipe : Pipe
+    The pipe connected to the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L62-L70" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L74-L82" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addOutgoingPipe(self, pipe: Pipe):
-    &#34;&#34;&#34; Add an outgoing pipe to the Filter.
+    &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
     Parameters
     ----------
-    pipe : Pipe
-        The pipe connected to the outgoing end of the Filter.
+        pipe : Pipe
+            The pipe connected to the outgoing end of the filter.
     &#34;&#34;&#34;
-    self.outgoingPipes.append(pipe)</code></pre>
+    self.__outgoingPipes.append(pipe)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.Filter.getIncomingConnections"><code class="name flex">
 <span>def <span class="ident">getIncomingConnections</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return incoming connection objects of the Filter.</p>
+<div class="desc"><p>Get incoming connection objects of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Connection[]</code></dt>
-<dd>The connections at the incoming end of the Filter.</dd>
-</dl></div>
+<pre><code>Connection[]
+    The connections at the incoming end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L102-L110" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L114-L122" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingConnections(self):
-    &#34;&#34;&#34; Return incoming connection objects of the Filter.
+    &#34;&#34;&#34; Get incoming connection objects of the filter.
 
     Returns
     -------
-    Connection[]
-        The connections at the incoming end of the Filter.
+        Connection[]
+            The connections at the incoming end of the filter.
     &#34;&#34;&#34;
-    return self.incomingConnections</code></pre>
+    return self.__incomingConnections</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.Filter.getIncomingPipes"><code class="name flex">
 <span>def <span class="ident">getIncomingPipes</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return incoming pipes of the Filter.</p>
+<div class="desc"><p>Get incoming pipes of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Pipe[]</code></dt>
-<dd>The pipes at the incoming end of the Filter.</dd>
-</dl></div>
+<pre><code>Pipe[]
+    The pipes at the incoming end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L82-L90" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L94-L102" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingPipes(self):
-    &#34;&#34;&#34; Return incoming pipes of the Filter.
+    &#34;&#34;&#34; Get incoming pipes of the filter.
 
     Returns
     -------
-    Pipe[]
-        The pipes at the incoming end of the Filter.
+        Pipe[]
+            The pipes at the incoming end of the filter.
     &#34;&#34;&#34;
-    return self.incomingPipes</code></pre>
+    return self.__incomingPipes</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.Filter.getOutgoingConnections"><code class="name flex">
 <span>def <span class="ident">getOutgoingConnections</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return outgoing connection objects of the Filter.</p>
+<div class="desc"><p>Get outgoing connection objects of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Connection[]</code></dt>
-<dd>The connections at the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>Connection[]
+    The connections at the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L122-L130" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L134-L142" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingConnections(self):
-    &#34;&#34;&#34; Return outgoing connection objects of the Filter.
+    &#34;&#34;&#34; Get outgoing connection objects of the filter.
 
     Returns
     -------
-    Connection[]
-        The connections at the outgoing end of the Filter.
+        Connection[]
+            The connections at the outgoing end of the filter.
     &#34;&#34;&#34;
-    return self.outgoingConnections</code></pre>
+    return self.__outgoingConnections</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.Filter.getOutgoingPipes"><code class="name flex">
 <span>def <span class="ident">getOutgoingPipes</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return outgoing pipes of the Filter.</p>
+<div class="desc"><p>Get outgoing pipes of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Pipe[]</code></dt>
-<dd>The pipes at the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>Pipe[]
+    The pipes at the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L72-L80" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L84-L92" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingPipes(self):
-    &#34;&#34;&#34; Return outgoing pipes of the Filter.
+    &#34;&#34;&#34; Get outgoing pipes of the filter.
 
     Returns
     -------
-    Pipe[]
-        The pipes at the outgoing end of the Filter.
+        Pipe[]
+            The pipes at the outgoing end of the filter.
     &#34;&#34;&#34;
-    return self.outgoingPipes</code></pre>
+    return self.__outgoingPipes</code></pre>
 </details>
 </dd>
 </dl>
@@ -783,6 +823,7 @@ def run(self):
 <ul class="hlist">
 <li><code><b><a title="pipesandfilters.filter.BaseFilter" href="#pipesandfilters.filter.BaseFilter">BaseFilter</a></b></code>:
 <ul class="hlist">
+<li><code><a title="pipesandfilters.filter.BaseFilter.getId" href="#pipesandfilters.filter.BaseFilter.getId">getId</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.process" href="#pipesandfilters.filter.BaseFilter.process">process</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.run" href="#pipesandfilters.filter.BaseFilter.run">run</a></code></li>
 </ul>
@@ -794,82 +835,82 @@ def run(self):
 <span>(</span><span>id: str, filterProcess)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A Sink Filter.
-A component in the pipeline that has incoming pipes but no outgoing pipes.</p>
+<div class="desc"><p>A sink filter. </p>
+<p>A component in the pipeline that has incoming pipes but no outgoing pipes.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>id</code></strong> :&ensp;<code>str</code></dt>
-<dd>Identifier for the Filter.</dd>
-<dt><strong><code>filterProcess</code></strong> :&ensp;<code><a title="pipesandfilters.filter.Filter" href="#pipesandfilters.filter.Filter">Filter</a></code></dt>
-<dd>The calllable object (function) that is applied by the Filter on the message.</dd>
-</dl></div>
+<pre><code>id : str
+    Identifier for the filter. 
+filterProcess : function
+    The calllable object (function) that is applied by the filter on the message.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L217-L283" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L229-L296" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class SinkFilter(BaseFilter):
     &#34;&#34;&#34;
-    A Sink Filter. 
+    A sink filter. 
+
     A component in the pipeline that has incoming pipes but no outgoing pipes.
     &#34;&#34;&#34;
 
     def __init__(self, id: str, filterProcess):
-        self.incomingPipes = []
-        self.incomingConnections = []
-        self.filterProcess = filterProcess
-        self.id = id
+        self.__incomingPipes = []
+        self.__incomingConnections = []
+        self._BaseFilter__filterProcess = filterProcess
+        self.__id = id
 
     def addIncomingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an incoming pipe to the Filter.
+        &#34;&#34;&#34; Add an incoming pipe to the filter.
         
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the incoming end of the Filter.
+            pipe : Pipe
+                The pipe connected to the incoming end of the filter.
         &#34;&#34;&#34;
-        self.incomingPipes.append(pipe)
+        self.__incomingPipes.append(pipe)
 
     def getIncomingPipes(self):
-        &#34;&#34;&#34; Return incoming pipes of the Filter.
+        &#34;&#34;&#34; Get incoming pipes of the filter.
         
         Returns
         -------
-        Pipe[]
-            The pipes at the incoming end of the Filter.
+            Pipe[]
+                The pipes at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingPipes
+        return self.__incomingPipes
 
     def getIncomingConnections(self):
-        &#34;&#34;&#34; Return incoming connection objects of the Filter.
+        &#34;&#34;&#34; Get incoming connection objects of the filter.
         
         Returns
         -------
-        Connection[]
-            The connections at the incoming end of the Filter.
+            Connection[]
+                The connections at the incoming end of the filter.
         &#34;&#34;&#34;
-        return self.incomingConnections
+        return self.__incomingConnections
 
     def addIncomingConnection(self, incomingConnection):
-        &#34;&#34;&#34; Add an incoming connection object to the Filter.
+        &#34;&#34;&#34; Add an incoming connection object to the filter.
         
         Parameters
         ----------
-        incomingConnection : Connection
-            The connection object at the incoming end of the Filter.
+            incomingConnection : Connection
+                The connection object at the incoming end of the filter.
         &#34;&#34;&#34;
-        self.incomingConnections.append(incomingConnection)
+        self.__incomingConnections.append(incomingConnection)
 
     def run(self):
-        print(len(self.incomingConnections))
-        if len(self.incomingConnections) == 0:
+        print(len(self.__incomingConnections))
+        if len(self.__incomingConnections) == 0:
             print(&#34;No incoming connections yet!&#34;)
-        while self.incomingConnections:
-            for r in wait(self.incomingConnections):
+        while self.__incomingConnections:
+            for reader in wait(self.__incomingConnections):
                 try:
-                    input = r.recv()
+                    input = reader.recv()
                 except EOFError:
-                    self.incomingConnections.remove(r)
+                    self.__incomingConnections.remove(reader)
                 else:
                     print(&#34;Received&#34;)
         output = self.process(input)
@@ -886,104 +927,100 @@ A component in the pipeline that has incoming pipes but no outgoing pipes.</p>
 <span>def <span class="ident">addIncomingConnection</span></span>(<span>self, incomingConnection)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an incoming connection object to the Filter.</p>
+<div class="desc"><p>Add an incoming connection object to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>incomingConnection</code></strong> :&ensp;<code>Connection</code></dt>
-<dd>The connection object at the incoming end of the Filter.</dd>
-</dl></div>
+<pre><code>incomingConnection : Connection
+    The connection object at the incoming end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L259-L267" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L272-L280" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addIncomingConnection(self, incomingConnection):
-    &#34;&#34;&#34; Add an incoming connection object to the Filter.
+    &#34;&#34;&#34; Add an incoming connection object to the filter.
     
     Parameters
     ----------
-    incomingConnection : Connection
-        The connection object at the incoming end of the Filter.
+        incomingConnection : Connection
+            The connection object at the incoming end of the filter.
     &#34;&#34;&#34;
-    self.incomingConnections.append(incomingConnection)</code></pre>
+    self.__incomingConnections.append(incomingConnection)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.SinkFilter.addIncomingPipe"><code class="name flex">
 <span>def <span class="ident">addIncomingPipe</span></span>(<span>self, pipe: <a title="pipesandfilters.pipe.Pipe" href="pipe.html#pipesandfilters.pipe.Pipe">Pipe</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an incoming pipe to the Filter.</p>
+<div class="desc"><p>Add an incoming pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>pipe</code></strong> :&ensp;<code>Pipe</code></dt>
-<dd>The pipe connected to the incoming end of the Filter.</dd>
-</dl></div>
+<pre><code>pipe : Pipe
+    The pipe connected to the incoming end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L229-L237" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L242-L250" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addIncomingPipe(self, pipe: Pipe):
-    &#34;&#34;&#34; Add an incoming pipe to the Filter.
+    &#34;&#34;&#34; Add an incoming pipe to the filter.
     
     Parameters
     ----------
-    pipe : Pipe
-        The pipe connected to the incoming end of the Filter.
+        pipe : Pipe
+            The pipe connected to the incoming end of the filter.
     &#34;&#34;&#34;
-    self.incomingPipes.append(pipe)</code></pre>
+    self.__incomingPipes.append(pipe)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.SinkFilter.getIncomingConnections"><code class="name flex">
 <span>def <span class="ident">getIncomingConnections</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return incoming connection objects of the Filter.</p>
+<div class="desc"><p>Get incoming connection objects of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Connection[]</code></dt>
-<dd>The connections at the incoming end of the Filter.</dd>
-</dl></div>
+<pre><code>Connection[]
+    The connections at the incoming end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L249-L257" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L262-L270" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingConnections(self):
-    &#34;&#34;&#34; Return incoming connection objects of the Filter.
+    &#34;&#34;&#34; Get incoming connection objects of the filter.
     
     Returns
     -------
-    Connection[]
-        The connections at the incoming end of the Filter.
+        Connection[]
+            The connections at the incoming end of the filter.
     &#34;&#34;&#34;
-    return self.incomingConnections</code></pre>
+    return self.__incomingConnections</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.SinkFilter.getIncomingPipes"><code class="name flex">
 <span>def <span class="ident">getIncomingPipes</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return incoming pipes of the Filter.</p>
+<div class="desc"><p>Get incoming pipes of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Pipe[]</code></dt>
-<dd>The pipes at the incoming end of the Filter.</dd>
-</dl></div>
+<pre><code>Pipe[]
+    The pipes at the incoming end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L239-L247" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L252-L260" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingPipes(self):
-    &#34;&#34;&#34; Return incoming pipes of the Filter.
+    &#34;&#34;&#34; Get incoming pipes of the filter.
     
     Returns
     -------
-    Pipe[]
-        The pipes at the incoming end of the Filter.
+        Pipe[]
+            The pipes at the incoming end of the filter.
     &#34;&#34;&#34;
-    return self.incomingPipes</code></pre>
+    return self.__incomingPipes</code></pre>
 </details>
 </dd>
 </dl>
@@ -991,6 +1028,7 @@ A component in the pipeline that has incoming pipes but no outgoing pipes.</p>
 <ul class="hlist">
 <li><code><b><a title="pipesandfilters.filter.BaseFilter" href="#pipesandfilters.filter.BaseFilter">BaseFilter</a></b></code>:
 <ul class="hlist">
+<li><code><a title="pipesandfilters.filter.BaseFilter.getId" href="#pipesandfilters.filter.BaseFilter.getId">getId</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.process" href="#pipesandfilters.filter.BaseFilter.process">process</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.run" href="#pipesandfilters.filter.BaseFilter.run">run</a></code></li>
 </ul>
@@ -1002,76 +1040,75 @@ A component in the pipeline that has incoming pipes but no outgoing pipes.</p>
 <span>(</span><span>id: str, filterProcess)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A Source Filter. </p>
+<div class="desc"><p>A source filter. </p>
 <p>A component in the pipeline that has outgoing pipes but no incoming pipes.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>id</code></strong> :&ensp;<code>str</code></dt>
-<dd>Identifier for the Filter.</dd>
-<dt><strong><code>filterProcess</code></strong> :&ensp;<code><a title="pipesandfilters.filter.Filter" href="#pipesandfilters.filter.Filter">Filter</a></code></dt>
-<dd>The calllable object (function) that is applied by the Filter on the message.</dd>
-</dl></div>
+<pre><code>id : str
+    Identifier for the filter. 
+filterProcess : function
+    The calllable object (function) that is applied by the filter on the message.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L157-L214" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L169-L226" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class SourceFilter(BaseFilter):
     &#34;&#34;&#34;
-    A Source Filter. 
+    A source filter. 
     
     A component in the pipeline that has outgoing pipes but no incoming pipes.
     &#34;&#34;&#34;
 
     def __init__(self, id: str, filterProcess):
-        self.outgoingPipes = []
-        self.outgoingConnections = []
-        self.filterProcess = filterProcess
-        self.id = id
+        self.__outgoingPipes = []
+        self.__outgoingConnections = []
+        self._BaseFilter__filterProcess = filterProcess
+        self.__id = id
 
     def getOutgoingPipes(self):
-        &#34;&#34;&#34; Return outgoing pipes of the Filter.
+        &#34;&#34;&#34; Get outgoing pipes of the filter.
 
         Returns
         -------
-        Pipe[]
-            The pipes at the outgoing end of the Filter.
+            Pipe[]
+                The pipes at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingPipes
+        return self.__outgoingPipes
 
     def addOutgoingPipe(self, pipe: Pipe):
-        &#34;&#34;&#34; Add an outgoing pipe to the Filter.
+        &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-        pipe : Pipe
-            The pipe connected to the outgoing end of the Filter.
+            pipe : Pipe
+                The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingPipes.append(pipe)
+        self.__outgoingPipes.append(pipe)
 
     def getOutgoingConnections(self):
-        &#34;&#34;&#34; Return outgoing connection objects of the Filter.
+        &#34;&#34;&#34; Get outgoing connection objects of the filter.
 
         Returns
         -------
-        Connection[]
-            The connections at the outgoing end of the Filter.
+            Connection[]
+                The connections at the outgoing end of the filter.
         &#34;&#34;&#34;
-        return self.outgoingConnections
+        return self.__outgoingConnections
 
     def addOutgoingConnection(self, outgoingConnection):
-        &#34;&#34;&#34; Add an outgoing connection object to the Filter.
+        &#34;&#34;&#34; Add an outgoing connection object to the filter.
         
         Parameters
         ----------
-        outgoingConnection : Connection
-            The connection object at the outgoing end of the Filter.
+            outgoingConnection : Connection
+                The connection object at the outgoing end of the filter.
         &#34;&#34;&#34;
-        self.outgoingConnections.append(outgoingConnection)
+        self.__outgoingConnections.append(outgoingConnection)
 
     def run(self, input):
         output = self.process(input)
-        for conn in self.outgoingConnections:
+        for conn in self.__outgoingConnections:
             conn.send(output)
             conn.close()</code></pre>
 </details>
@@ -1085,104 +1122,100 @@ A component in the pipeline that has incoming pipes but no outgoing pipes.</p>
 <span>def <span class="ident">addOutgoingConnection</span></span>(<span>self, outgoingConnection)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an outgoing connection object to the Filter.</p>
+<div class="desc"><p>Add an outgoing connection object to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>outgoingConnection</code></strong> :&ensp;<code>Connection</code></dt>
-<dd>The connection object at the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>outgoingConnection : Connection
+    The connection object at the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L200-L208" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L212-L220" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addOutgoingConnection(self, outgoingConnection):
-    &#34;&#34;&#34; Add an outgoing connection object to the Filter.
+    &#34;&#34;&#34; Add an outgoing connection object to the filter.
     
     Parameters
     ----------
-    outgoingConnection : Connection
-        The connection object at the outgoing end of the Filter.
+        outgoingConnection : Connection
+            The connection object at the outgoing end of the filter.
     &#34;&#34;&#34;
-    self.outgoingConnections.append(outgoingConnection)</code></pre>
+    self.__outgoingConnections.append(outgoingConnection)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.SourceFilter.addOutgoingPipe"><code class="name flex">
 <span>def <span class="ident">addOutgoingPipe</span></span>(<span>self, pipe: <a title="pipesandfilters.pipe.Pipe" href="pipe.html#pipesandfilters.pipe.Pipe">Pipe</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add an outgoing pipe to the Filter.</p>
+<div class="desc"><p>Add an outgoing pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>pipe</code></strong> :&ensp;<code>Pipe</code></dt>
-<dd>The pipe connected to the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>pipe : Pipe
+    The pipe connected to the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L180-L188" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L192-L200" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addOutgoingPipe(self, pipe: Pipe):
-    &#34;&#34;&#34; Add an outgoing pipe to the Filter.
+    &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
     Parameters
     ----------
-    pipe : Pipe
-        The pipe connected to the outgoing end of the Filter.
+        pipe : Pipe
+            The pipe connected to the outgoing end of the filter.
     &#34;&#34;&#34;
-    self.outgoingPipes.append(pipe)</code></pre>
+    self.__outgoingPipes.append(pipe)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.SourceFilter.getOutgoingConnections"><code class="name flex">
 <span>def <span class="ident">getOutgoingConnections</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return outgoing connection objects of the Filter.</p>
+<div class="desc"><p>Get outgoing connection objects of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Connection[]</code></dt>
-<dd>The connections at the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>Connection[]
+    The connections at the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L190-L198" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L202-L210" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingConnections(self):
-    &#34;&#34;&#34; Return outgoing connection objects of the Filter.
+    &#34;&#34;&#34; Get outgoing connection objects of the filter.
 
     Returns
     -------
-    Connection[]
-        The connections at the outgoing end of the Filter.
+        Connection[]
+            The connections at the outgoing end of the filter.
     &#34;&#34;&#34;
-    return self.outgoingConnections</code></pre>
+    return self.__outgoingConnections</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.filter.SourceFilter.getOutgoingPipes"><code class="name flex">
 <span>def <span class="ident">getOutgoingPipes</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return outgoing pipes of the Filter.</p>
+<div class="desc"><p>Get outgoing pipes of the filter.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Pipe[]</code></dt>
-<dd>The pipes at the outgoing end of the Filter.</dd>
-</dl></div>
+<pre><code>Pipe[]
+    The pipes at the outgoing end of the filter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/filter.py#L170-L178" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/filter.py#L182-L190" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingPipes(self):
-    &#34;&#34;&#34; Return outgoing pipes of the Filter.
+    &#34;&#34;&#34; Get outgoing pipes of the filter.
 
     Returns
     -------
-    Pipe[]
-        The pipes at the outgoing end of the Filter.
+        Pipe[]
+            The pipes at the outgoing end of the filter.
     &#34;&#34;&#34;
-    return self.outgoingPipes</code></pre>
+    return self.__outgoingPipes</code></pre>
 </details>
 </dd>
 </dl>
@@ -1190,6 +1223,7 @@ A component in the pipeline that has incoming pipes but no outgoing pipes.</p>
 <ul class="hlist">
 <li><code><b><a title="pipesandfilters.filter.BaseFilter" href="#pipesandfilters.filter.BaseFilter">BaseFilter</a></b></code>:
 <ul class="hlist">
+<li><code><a title="pipesandfilters.filter.BaseFilter.getId" href="#pipesandfilters.filter.BaseFilter.getId">getId</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.process" href="#pipesandfilters.filter.BaseFilter.process">process</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.run" href="#pipesandfilters.filter.BaseFilter.run">run</a></code></li>
 </ul>
@@ -1224,6 +1258,7 @@ data-gaCategoryParameter="pipesandfilters.filter">
 <li>
 <h4><code><a title="pipesandfilters.filter.BaseFilter" href="#pipesandfilters.filter.BaseFilter">BaseFilter</a></code></h4>
 <ul class="">
+<li><code><a title="pipesandfilters.filter.BaseFilter.getId" href="#pipesandfilters.filter.BaseFilter.getId">getId</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.process" href="#pipesandfilters.filter.BaseFilter.process">process</a></code></li>
 <li><code><a title="pipesandfilters.filter.BaseFilter.run" href="#pipesandfilters.filter.BaseFilter.run">run</a></code></li>
 </ul>

@@ -27,7 +27,7 @@
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L0-L215" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L0-L217" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import typing
 from multiprocessing import Process
@@ -49,58 +49,58 @@ class Pipeline(object):
         &#34;&#34;&#34;
         Parameters
         ----------
-        id : str
-            The name of the Pipeline.
+            id : str
+                The name of the Pipeline.
         &#34;&#34;&#34;
-        self.id = id
+        self.__id = id
         # Source Filter(starting point) of the pipeline
-        self.sourceFilter = None
+        self.__sourceFilter = None
         # SinkFilter(ending point) of the Pipeline
-        self.sinkFilter = []
-        self.adjacency = {}
-        self.components = []
-        self.validated = False
+        self.__sinkFilter = []
+        self.__adjacency = {}
+        self.__components = []
+        self.__isValid = False
 
     def setSourceFilter(self, sourceFilter: SourceFilter):
         &#34;&#34;&#34;Set the SouceFilter for the Pipeline.
 
         Parameters
         ----------
-        sourceFilter : SourceFilter.
+            sourceFilter : SourceFilter.
 
         &#34;&#34;&#34;
-        self.sourceFilter = sourceFilter
+        self.__sourceFilter = sourceFilter
 
     def addSinkFilter(self, sinkFilter: SinkFilter):
-        &#34;&#34;&#34;Append a Filter to the list of SinkFilter of the Pipeline.
+        &#34;&#34;&#34;Add a Filter to the list of SinkFilter of the Pipeline.
 
         Parameters
         ----------
-        sinkFilter : SinkFilter
+            sinkFilter : SinkFilter
 
         &#34;&#34;&#34;
-        self.sinkFilter.append(sinkFilter)
+        self.__sinkFilter.append(sinkFilter)
 
     def getSourceFilter(self):
         &#34;&#34;&#34;Get the SourceFilter of the Pipeline.
 
         Returns
         -------
-        SourceFilter
-            The SourceFilter of the Pipeline
+            SourceFilter
+                The SourceFilter of the Pipeline
         &#34;&#34;&#34;
-        return self.sourceFilter
+        return self.__sourceFilter
 
     def getSinkFilter(self):
         &#34;&#34;&#34;Get the list of SinkFilter of the Pipeline.
         
         Returns
         -------
-        SinkFilter[]
-            The list of SinkFilter of the Pipeline.
+            SinkFilter[]
+                The list of SinkFilter of the Pipeline.
 
         &#34;&#34;&#34;
-        return self.sinkFilter
+        return self.__sinkFilter
 
     def validate(self):
         &#34;&#34;&#34;Validate the Pipeline.
@@ -109,14 +109,14 @@ class Pipeline(object):
        
         Returns
         -------
-        Bool
-            A boolean value that indicates whether the Pipeline is valid or not.
+            Bool
+                A boolean value that indicates whether the Pipeline is valid or not.
 
         &#34;&#34;&#34;
 
         def add_edge(head, tail, weight):
             &#34;&#34;&#34;
-            Adds an edge to the graph.
+            Add an edge to the graph.
             `head` and `tail are vertices representing the endpoints of the edge
             `weight` is the weight of the egde from head to tail
             &#34;&#34;&#34;
@@ -129,15 +129,15 @@ class Pipeline(object):
                 return
 
             # Since graph is directed, we are not adding the reverse edge
-            self.adjacency[head][tail] = weight
+            self.__adjacency[head][tail] = weight
 
         def add_vertex(vertex):
             &#34;&#34;&#34;
-            Adds a vertex to the graph.
+            Add a vertex to the graph.
             `vertex` must be a hashable object
             &#34;&#34;&#34;
-            if vertex not in self.adjacency:
-                self.adjacency[vertex] = {}
+            if vertex not in self.__adjacency:
+                self.__adjacency[vertex] = {}
 
         # Create a dictionary to maintain the list of Filters visited by the BFS.
         visited = defaultdict(bool)
@@ -145,17 +145,19 @@ class Pipeline(object):
         # Queue to store the filters
         queue = []
 
+        self.__components = []
+
         # Enqueue the sourceFilter
         queue.append(self.getSourceFilter())
 
         while queue:
-            print(queue, self.components)
+            print(queue, self.__components)
 
             # Dequeue the currentFilter to process
             currentFilter = queue.pop(0)
 
             # Add the filter to the list of components
-            self.components.append(currentFilter)
+            self.__components.append(currentFilter)
 
             # Mark the currentFilter as visited
             visited[currentFilter] = True
@@ -171,7 +173,7 @@ class Pipeline(object):
             for pipe in currentFilter.getOutgoingPipes():
 
                 # Add the pipe to the list of components
-                self.components.append(pipe)
+                self.__components.append(pipe)
 
                 # If a connected Filter has not been visited, then mark it visited and enqueue it
                 if visited[pipe.getOutgoingFilter()] != True:
@@ -182,7 +184,7 @@ class Pipeline(object):
                     # Pipeline is cyclic =&gt; infeasible
                     return False
 
-        self.validated = True
+        self.__isValid = True
         return True
 
     def run(self, input):
@@ -190,19 +192,19 @@ class Pipeline(object):
         
         Parameters
         ----------
-        input
+            input
         
         Returns
         -------
-        output
+            output
         &#34;&#34;&#34;
 
         # Validate the pipeline if necessary
-        if not self.validated:
+        if not self.__isValid:
             self.validate()
 
         index = 0
-        for component in self.components:
+        for component in self.__components:
             index += 1
             if isinstance(component, SourceFilter):
                 component.run(input)
@@ -216,20 +218,20 @@ class Pipeline(object):
 
         Parameters
         ----------
-        path : file path
-            absolute path to store an image of the Pipeline
+            path : file path
+                absolute path to store an image of the Pipeline
         &#34;&#34;&#34;
         graph = nx.Graph()
 
         # add edges to the graph
-        for head in self.adjacency:
-            for tail in self.adjacency[head]:
-                weight = self.adjacency[head][tail]
+        for head in self.__adjacency:
+            for tail in self.__adjacency[head]:
+                weight = self.__adjacency[head][tail]
                 graph.add_edge(head, tail, weight=weight)
 
         # generate a layout for the graph and set the vertex labels to the Filter ids
         layout = nx.spring_layout(graph, seed=0)
-        labels = {v: v.id for v in graph.nodes()}
+        labels = {v: v.getId() for v in graph.nodes()}
         nx.draw(
             graph,
             layout,
@@ -240,7 +242,7 @@ class Pipeline(object):
         )
 
         # set the edge labels to the Pipe ids
-        labels = {e: e[1].getIncomingPipes()[0].id for e in graph.edges()}
+        labels = {e: e[1].getIncomingPipes()[0].getId() for e in graph.edges()}
         nx.draw_networkx_edge_labels(graph, pos=layout, edge_labels=labels)
 
         # save the figure in the given path
@@ -264,14 +266,13 @@ class Pipeline(object):
 <div class="desc"><p>Pipeline class.
 Encapsulates a set of data processing elements connected in series, where the output of one element is the input of the next one.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>id</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the Pipeline.</dd>
-</dl></div>
+<pre><code>id : str
+    The name of the Pipeline.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L10-L216" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L10-L218" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class Pipeline(object):
 
@@ -284,58 +285,58 @@ Encapsulates a set of data processing elements connected in series, where the ou
         &#34;&#34;&#34;
         Parameters
         ----------
-        id : str
-            The name of the Pipeline.
+            id : str
+                The name of the Pipeline.
         &#34;&#34;&#34;
-        self.id = id
+        self.__id = id
         # Source Filter(starting point) of the pipeline
-        self.sourceFilter = None
+        self.__sourceFilter = None
         # SinkFilter(ending point) of the Pipeline
-        self.sinkFilter = []
-        self.adjacency = {}
-        self.components = []
-        self.validated = False
+        self.__sinkFilter = []
+        self.__adjacency = {}
+        self.__components = []
+        self.__isValid = False
 
     def setSourceFilter(self, sourceFilter: SourceFilter):
         &#34;&#34;&#34;Set the SouceFilter for the Pipeline.
 
         Parameters
         ----------
-        sourceFilter : SourceFilter.
+            sourceFilter : SourceFilter.
 
         &#34;&#34;&#34;
-        self.sourceFilter = sourceFilter
+        self.__sourceFilter = sourceFilter
 
     def addSinkFilter(self, sinkFilter: SinkFilter):
-        &#34;&#34;&#34;Append a Filter to the list of SinkFilter of the Pipeline.
+        &#34;&#34;&#34;Add a Filter to the list of SinkFilter of the Pipeline.
 
         Parameters
         ----------
-        sinkFilter : SinkFilter
+            sinkFilter : SinkFilter
 
         &#34;&#34;&#34;
-        self.sinkFilter.append(sinkFilter)
+        self.__sinkFilter.append(sinkFilter)
 
     def getSourceFilter(self):
         &#34;&#34;&#34;Get the SourceFilter of the Pipeline.
 
         Returns
         -------
-        SourceFilter
-            The SourceFilter of the Pipeline
+            SourceFilter
+                The SourceFilter of the Pipeline
         &#34;&#34;&#34;
-        return self.sourceFilter
+        return self.__sourceFilter
 
     def getSinkFilter(self):
         &#34;&#34;&#34;Get the list of SinkFilter of the Pipeline.
         
         Returns
         -------
-        SinkFilter[]
-            The list of SinkFilter of the Pipeline.
+            SinkFilter[]
+                The list of SinkFilter of the Pipeline.
 
         &#34;&#34;&#34;
-        return self.sinkFilter
+        return self.__sinkFilter
 
     def validate(self):
         &#34;&#34;&#34;Validate the Pipeline.
@@ -344,14 +345,14 @@ Encapsulates a set of data processing elements connected in series, where the ou
        
         Returns
         -------
-        Bool
-            A boolean value that indicates whether the Pipeline is valid or not.
+            Bool
+                A boolean value that indicates whether the Pipeline is valid or not.
 
         &#34;&#34;&#34;
 
         def add_edge(head, tail, weight):
             &#34;&#34;&#34;
-            Adds an edge to the graph.
+            Add an edge to the graph.
             `head` and `tail are vertices representing the endpoints of the edge
             `weight` is the weight of the egde from head to tail
             &#34;&#34;&#34;
@@ -364,15 +365,15 @@ Encapsulates a set of data processing elements connected in series, where the ou
                 return
 
             # Since graph is directed, we are not adding the reverse edge
-            self.adjacency[head][tail] = weight
+            self.__adjacency[head][tail] = weight
 
         def add_vertex(vertex):
             &#34;&#34;&#34;
-            Adds a vertex to the graph.
+            Add a vertex to the graph.
             `vertex` must be a hashable object
             &#34;&#34;&#34;
-            if vertex not in self.adjacency:
-                self.adjacency[vertex] = {}
+            if vertex not in self.__adjacency:
+                self.__adjacency[vertex] = {}
 
         # Create a dictionary to maintain the list of Filters visited by the BFS.
         visited = defaultdict(bool)
@@ -380,17 +381,19 @@ Encapsulates a set of data processing elements connected in series, where the ou
         # Queue to store the filters
         queue = []
 
+        self.__components = []
+
         # Enqueue the sourceFilter
         queue.append(self.getSourceFilter())
 
         while queue:
-            print(queue, self.components)
+            print(queue, self.__components)
 
             # Dequeue the currentFilter to process
             currentFilter = queue.pop(0)
 
             # Add the filter to the list of components
-            self.components.append(currentFilter)
+            self.__components.append(currentFilter)
 
             # Mark the currentFilter as visited
             visited[currentFilter] = True
@@ -406,7 +409,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
             for pipe in currentFilter.getOutgoingPipes():
 
                 # Add the pipe to the list of components
-                self.components.append(pipe)
+                self.__components.append(pipe)
 
                 # If a connected Filter has not been visited, then mark it visited and enqueue it
                 if visited[pipe.getOutgoingFilter()] != True:
@@ -417,7 +420,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
                     # Pipeline is cyclic =&gt; infeasible
                     return False
 
-        self.validated = True
+        self.__isValid = True
         return True
 
     def run(self, input):
@@ -425,19 +428,19 @@ Encapsulates a set of data processing elements connected in series, where the ou
         
         Parameters
         ----------
-        input
+            input
         
         Returns
         -------
-        output
+            output
         &#34;&#34;&#34;
 
         # Validate the pipeline if necessary
-        if not self.validated:
+        if not self.__isValid:
             self.validate()
 
         index = 0
-        for component in self.components:
+        for component in self.__components:
             index += 1
             if isinstance(component, SourceFilter):
                 component.run(input)
@@ -451,20 +454,20 @@ Encapsulates a set of data processing elements connected in series, where the ou
 
         Parameters
         ----------
-        path : file path
-            absolute path to store an image of the Pipeline
+            path : file path
+                absolute path to store an image of the Pipeline
         &#34;&#34;&#34;
         graph = nx.Graph()
 
         # add edges to the graph
-        for head in self.adjacency:
-            for tail in self.adjacency[head]:
-                weight = self.adjacency[head][tail]
+        for head in self.__adjacency:
+            for tail in self.__adjacency[head]:
+                weight = self.__adjacency[head][tail]
                 graph.add_edge(head, tail, weight=weight)
 
         # generate a layout for the graph and set the vertex labels to the Filter ids
         layout = nx.spring_layout(graph, seed=0)
-        labels = {v: v.id for v in graph.nodes()}
+        labels = {v: v.getId() for v in graph.nodes()}
         nx.draw(
             graph,
             layout,
@@ -475,7 +478,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
         )
 
         # set the edge labels to the Pipe ids
-        labels = {e: e[1].getIncomingPipes()[0].id for e in graph.edges()}
+        labels = {e: e[1].getIncomingPipes()[0].getId() for e in graph.edges()}
         nx.draw_networkx_edge_labels(graph, pos=layout, edge_labels=labels)
 
         # save the figure in the given path
@@ -487,26 +490,24 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <span>def <span class="ident">addSinkFilter</span></span>(<span>self, sinkFilter: <a title="pipesandfilters.filter.SinkFilter" href="filter.html#pipesandfilters.filter.SinkFilter">SinkFilter</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Append a Filter to the list of SinkFilter of the Pipeline.</p>
+<div class="desc"><p>Add a Filter to the list of SinkFilter of the Pipeline.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>sinkFilter</code></strong> :&ensp;<code>SinkFilter</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
+<pre><code>sinkFilter : SinkFilter
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L43-L51" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L43-L51" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addSinkFilter(self, sinkFilter: SinkFilter):
-    &#34;&#34;&#34;Append a Filter to the list of SinkFilter of the Pipeline.
+    &#34;&#34;&#34;Add a Filter to the list of SinkFilter of the Pipeline.
 
     Parameters
     ----------
-    sinkFilter : SinkFilter
+        sinkFilter : SinkFilter
 
     &#34;&#34;&#34;
-    self.sinkFilter.append(sinkFilter)</code></pre>
+    self.__sinkFilter.append(sinkFilter)</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.pipeline.Pipeline.getSinkFilter"><code class="name flex">
@@ -515,25 +516,24 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <dd>
 <div class="desc"><p>Get the list of SinkFilter of the Pipeline.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>SinkFilter[]</code></dt>
-<dd>The list of SinkFilter of the Pipeline.</dd>
-</dl></div>
+<pre><code>SinkFilter[]
+    The list of SinkFilter of the Pipeline.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L63-L72" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L63-L72" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getSinkFilter(self):
     &#34;&#34;&#34;Get the list of SinkFilter of the Pipeline.
     
     Returns
     -------
-    SinkFilter[]
-        The list of SinkFilter of the Pipeline.
+        SinkFilter[]
+            The list of SinkFilter of the Pipeline.
 
     &#34;&#34;&#34;
-    return self.sinkFilter</code></pre>
+    return self.__sinkFilter</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.pipeline.Pipeline.getSourceFilter"><code class="name flex">
@@ -542,24 +542,23 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <dd>
 <div class="desc"><p>Get the SourceFilter of the Pipeline.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>SourceFilter</code></dt>
-<dd>The SourceFilter of the Pipeline</dd>
-</dl></div>
+<pre><code>SourceFilter
+    The SourceFilter of the Pipeline
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L53-L61" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L53-L61" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getSourceFilter(self):
     &#34;&#34;&#34;Get the SourceFilter of the Pipeline.
 
     Returns
     -------
-    SourceFilter
-        The SourceFilter of the Pipeline
+        SourceFilter
+            The SourceFilter of the Pipeline
     &#34;&#34;&#34;
-    return self.sourceFilter</code></pre>
+    return self.__sourceFilter</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.pipeline.Pipeline.run"><code class="name flex">
@@ -568,38 +567,34 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <dd>
 <div class="desc"><p>Fire up all the components in the pipeline.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>input</code></strong></dt>
-<dd>&nbsp;</dd>
-</dl>
+<pre><code>input
+</code></pre>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>output</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
+<pre><code>output
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L157-L180" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L159-L182" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def run(self, input):
     &#34;&#34;&#34;Fire up all the components in the pipeline.
     
     Parameters
     ----------
-    input
+        input
     
     Returns
     -------
-    output
+        output
     &#34;&#34;&#34;
 
     # Validate the pipeline if necessary
-    if not self.validated:
+    if not self.__isValid:
         self.validate()
 
     index = 0
-    for component in self.components:
+    for component in self.__components:
         index += 1
         if isinstance(component, SourceFilter):
             component.run(input)
@@ -614,21 +609,22 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <dd>
 <div class="desc"><p>Set the SouceFilter for the Pipeline.</p>
 <h2 id="parameters">Parameters</h2>
-<p>sourceFilter : SourceFilter.</p></div>
+<pre><code>sourceFilter : SourceFilter.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L33-L41" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L33-L41" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def setSourceFilter(self, sourceFilter: SourceFilter):
     &#34;&#34;&#34;Set the SouceFilter for the Pipeline.
 
     Parameters
     ----------
-    sourceFilter : SourceFilter.
+        sourceFilter : SourceFilter.
 
     &#34;&#34;&#34;
-    self.sourceFilter = sourceFilter</code></pre>
+    self.__sourceFilter = sourceFilter</code></pre>
 </details>
 </dd>
 <dt id="pipesandfilters.pipeline.Pipeline.validate"><code class="name flex">
@@ -638,14 +634,13 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <div class="desc"><p>Validate the Pipeline.</p>
 <p>Verify whether the Pipeline can be represented by an acyclic connected graph with appropriate filters at the leaf nodes. Breadth First Search is applied on the Pipeline.</p>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Bool</code></dt>
-<dd>A boolean value that indicates whether the Pipeline is valid or not.</dd>
-</dl></div>
+<pre><code>Bool
+    A boolean value that indicates whether the Pipeline is valid or not.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L74-L155" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L74-L157" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def validate(self):
     &#34;&#34;&#34;Validate the Pipeline.
@@ -654,14 +649,14 @@ Encapsulates a set of data processing elements connected in series, where the ou
    
     Returns
     -------
-    Bool
-        A boolean value that indicates whether the Pipeline is valid or not.
+        Bool
+            A boolean value that indicates whether the Pipeline is valid or not.
 
     &#34;&#34;&#34;
 
     def add_edge(head, tail, weight):
         &#34;&#34;&#34;
-        Adds an edge to the graph.
+        Add an edge to the graph.
         `head` and `tail are vertices representing the endpoints of the edge
         `weight` is the weight of the egde from head to tail
         &#34;&#34;&#34;
@@ -674,15 +669,15 @@ Encapsulates a set of data processing elements connected in series, where the ou
             return
 
         # Since graph is directed, we are not adding the reverse edge
-        self.adjacency[head][tail] = weight
+        self.__adjacency[head][tail] = weight
 
     def add_vertex(vertex):
         &#34;&#34;&#34;
-        Adds a vertex to the graph.
+        Add a vertex to the graph.
         `vertex` must be a hashable object
         &#34;&#34;&#34;
-        if vertex not in self.adjacency:
-            self.adjacency[vertex] = {}
+        if vertex not in self.__adjacency:
+            self.__adjacency[vertex] = {}
 
     # Create a dictionary to maintain the list of Filters visited by the BFS.
     visited = defaultdict(bool)
@@ -690,17 +685,19 @@ Encapsulates a set of data processing elements connected in series, where the ou
     # Queue to store the filters
     queue = []
 
+    self.__components = []
+
     # Enqueue the sourceFilter
     queue.append(self.getSourceFilter())
 
     while queue:
-        print(queue, self.components)
+        print(queue, self.__components)
 
         # Dequeue the currentFilter to process
         currentFilter = queue.pop(0)
 
         # Add the filter to the list of components
-        self.components.append(currentFilter)
+        self.__components.append(currentFilter)
 
         # Mark the currentFilter as visited
         visited[currentFilter] = True
@@ -716,7 +713,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
         for pipe in currentFilter.getOutgoingPipes():
 
             # Add the pipe to the list of components
-            self.components.append(pipe)
+            self.__components.append(pipe)
 
             # If a connected Filter has not been visited, then mark it visited and enqueue it
             if visited[pipe.getOutgoingFilter()] != True:
@@ -727,7 +724,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
                 # Pipeline is cyclic =&gt; infeasible
                 return False
 
-    self.validated = True
+    self.__isValid = True
     return True</code></pre>
 </details>
 </dd>
@@ -737,14 +734,13 @@ Encapsulates a set of data processing elements connected in series, where the ou
 <dd>
 <div class="desc"><p>Visualize the Pipeline using <a href="https://pypi.org/project/networkx/">networkx</a>.</p>
 <h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>path</code></strong> :&ensp;<code>file path</code></dt>
-<dd>absolute path to store an image of the Pipeline</dd>
-</dl></div>
+<pre><code>path : file path
+    absolute path to store an image of the Pipeline
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/5f295f32e372481786cd06b01a879c615a620b2a/pipesandfilters/pipeline.py#L182-L216" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/78c2063aa1bd1600d8c5ffa2036ff23ffeae1787/pipesandfilters/pipeline.py#L184-L218" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def visualize(self, path):
     &#34;&#34;&#34;
@@ -752,20 +748,20 @@ Encapsulates a set of data processing elements connected in series, where the ou
 
     Parameters
     ----------
-    path : file path
-        absolute path to store an image of the Pipeline
+        path : file path
+            absolute path to store an image of the Pipeline
     &#34;&#34;&#34;
     graph = nx.Graph()
 
     # add edges to the graph
-    for head in self.adjacency:
-        for tail in self.adjacency[head]:
-            weight = self.adjacency[head][tail]
+    for head in self.__adjacency:
+        for tail in self.__adjacency[head]:
+            weight = self.__adjacency[head][tail]
             graph.add_edge(head, tail, weight=weight)
 
     # generate a layout for the graph and set the vertex labels to the Filter ids
     layout = nx.spring_layout(graph, seed=0)
-    labels = {v: v.id for v in graph.nodes()}
+    labels = {v: v.getId() for v in graph.nodes()}
     nx.draw(
         graph,
         layout,
@@ -776,7 +772,7 @@ Encapsulates a set of data processing elements connected in series, where the ou
     )
 
     # set the edge labels to the Pipe ids
-    labels = {e: e[1].getIncomingPipes()[0].id for e in graph.edges()}
+    labels = {e: e[1].getIncomingPipes()[0].getId() for e in graph.edges()}
     nx.draw_networkx_edge_labels(graph, pos=layout, edge_labels=labels)
 
     # save the figure in the given path
