@@ -25,8 +25,8 @@ pip install .
 '''
 
 import abc
+from .pipe import BasePipe, Pipe
 from .pipestrategy import PipeStrategy
-from .pipe import Pipe
 from .message import Message
 from .filter import BaseFilter, Filter, SourceFilter, SinkFilter
 from .pipeline import Pipeline

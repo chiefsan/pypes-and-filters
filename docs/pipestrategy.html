@@ -27,7 +27,7 @@
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/pipestrategy.py#L0-L40" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/pipestrategy.py#L0-L40" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import abc
 
@@ -91,7 +91,7 @@ and the last message from the incomingFilter to be processed last by the outgoin
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/pipestrategy.py#L25-L32" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/pipestrategy.py#L25-L32" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class FIFO(PipeStrategy):
     &#34;&#34;&#34;First In First Out strategy
@@ -125,7 +125,7 @@ and the first message from the incomingFilter to be processed last by the outgoi
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/pipestrategy.py#L34-L41" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/pipestrategy.py#L34-L41" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class LIFO(PipeStrategy):
     &#34;&#34;&#34;Last in First Out strategy
@@ -159,7 +159,7 @@ by which user's can modify the order of the message before sending it to outgoin
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/pipestrategy.py#L3-L23" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/pipestrategy.py#L3-L23" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class PipeStrategy(object, metaclass=abc.ABCMeta):
     &#34;&#34;&#34;Abstract class for PipeStrategy
@@ -206,7 +206,7 @@ by which user's can modify the order of the message before sending it to outgoin
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/pipestrategy.py#L9-L23" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/pipestrategy.py#L9-L23" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">@abc.abstractclassmethod
 def transformMessageQueue(self,messages):

@@ -2,7 +2,7 @@ import abc
 import typing
 from multiprocessing import Process, Pipe, current_process
 from multiprocessing.connection import wait
-from .pipe import Pipe
+from .pipe import BasePipe, Pipe
 from .message import Message
 
 
@@ -72,12 +72,12 @@ class Filter(BaseFilter):
         self._BaseFilter__filterProcess = filterProcess
         self.__id = id
 
-    def addOutgoingPipe(self, pipe: Pipe):
+    def addOutgoingPipe(self, pipe: BasePipe):
         """ Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the outgoing end of the filter.
         """
         self.__outgoingPipes.append(pipe)
@@ -102,12 +102,12 @@ class Filter(BaseFilter):
         """
         return self.__incomingPipes
 
-    def addIncomingPipe(self, pipe: Pipe):
+    def addIncomingPipe(self, pipe: BasePipe):
         """ Add an incoming pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the incoming end of the filterss.
         """
         self.__incomingPipes.append(pipe)
@@ -190,12 +190,12 @@ class SourceFilter(BaseFilter):
         """
         return self.__outgoingPipes
 
-    def addOutgoingPipe(self, pipe: Pipe):
+    def addOutgoingPipe(self, pipe: BasePipe):
         """ Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the outgoing end of the filter.
         """
         self.__outgoingPipes.append(pipe)
@@ -240,12 +240,12 @@ class SinkFilter(BaseFilter):
         self._BaseFilter__filterProcess = filterProcess
         self.__id = id
 
-    def addIncomingPipe(self, pipe: Pipe):
+    def addIncomingPipe(self, pipe: BasePipe):
         """ Add an incoming pipe to the filter.
         
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the incoming end of the filter.
         """
         self.__incomingPipes.append(pipe)

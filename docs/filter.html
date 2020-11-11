@@ -27,13 +27,13 @@
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L0-L296" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L0-L296" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">import abc
 import typing
 from multiprocessing import Process, Pipe, current_process
 from multiprocessing.connection import wait
-from .pipe import Pipe
+from .pipe import BasePipe, Pipe
 from .message import Message
 
 
@@ -103,12 +103,12 @@ class Filter(BaseFilter):
         self._BaseFilter__filterProcess = filterProcess
         self.__id = id
 
-    def addOutgoingPipe(self, pipe: Pipe):
+    def addOutgoingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
         self.__outgoingPipes.append(pipe)
@@ -133,12 +133,12 @@ class Filter(BaseFilter):
         &#34;&#34;&#34;
         return self.__incomingPipes
 
-    def addIncomingPipe(self, pipe: Pipe):
+    def addIncomingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an incoming pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the incoming end of the filterss.
         &#34;&#34;&#34;
         self.__incomingPipes.append(pipe)
@@ -221,12 +221,12 @@ class SourceFilter(BaseFilter):
         &#34;&#34;&#34;
         return self.__outgoingPipes
 
-    def addOutgoingPipe(self, pipe: Pipe):
+    def addOutgoingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
         self.__outgoingPipes.append(pipe)
@@ -271,12 +271,12 @@ class SinkFilter(BaseFilter):
         self._BaseFilter__filterProcess = filterProcess
         self.__id = id
 
-    def addIncomingPipe(self, pipe: Pipe):
+    def addIncomingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an incoming pipe to the filter.
         
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the incoming end of the filter.
         &#34;&#34;&#34;
         self.__incomingPipes.append(pipe)
@@ -354,7 +354,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L9-L58" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L9-L58" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class BaseFilter(object, metaclass=abc.ABCMeta):
     &#34;&#34;&#34;
@@ -427,7 +427,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L49-L58" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L49-L58" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getId(self):
     &#34;&#34;&#34;
@@ -453,7 +453,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L38-L47" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L38-L47" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def process(self, data):
     &#34;&#34;&#34;Apply `filterProcess` on the message.
@@ -476,7 +476,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L16-L22" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L16-L22" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">@abc.abstractmethod
 def run(self):
@@ -506,7 +506,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L61-L167" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L61-L167" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class Filter(BaseFilter):
     &#34;&#34;&#34;A standard filter. 
@@ -522,12 +522,12 @@ filterProcess : function
         self._BaseFilter__filterProcess = filterProcess
         self.__id = id
 
-    def addOutgoingPipe(self, pipe: Pipe):
+    def addOutgoingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
         self.__outgoingPipes.append(pipe)
@@ -552,12 +552,12 @@ filterProcess : function
         &#34;&#34;&#34;
         return self.__incomingPipes
 
-    def addIncomingPipe(self, pipe: Pipe):
+    def addIncomingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an incoming pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the incoming end of the filterss.
         &#34;&#34;&#34;
         self.__incomingPipes.append(pipe)
@@ -634,7 +634,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L125-L133" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L125-L133" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addIncomingConnection(self, incomingConnection):
     &#34;&#34;&#34; Add an incoming connection object to the filter.
@@ -648,25 +648,25 @@ filterProcess : function
 </details>
 </dd>
 <dt id="pypesandfilters.filter.Filter.addIncomingPipe"><code class="name flex">
-<span>def <span class="ident">addIncomingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.Pipe" href="pipe.html#pypesandfilters.pipe.Pipe">Pipe</a>)</span>
+<span>def <span class="ident">addIncomingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.BasePipe" href="pipe.html#pypesandfilters.pipe.BasePipe">BasePipe</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add an incoming pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<pre><code>pipe : Pipe
+<pre><code>pipe : BasePipe
     The pipe connected to the incoming end of the filterss.
 </code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L105-L113" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L105-L113" class="git-link">Browse git</a>
 </summary>
-<pre><code class="python">def addIncomingPipe(self, pipe: Pipe):
+<pre><code class="python">def addIncomingPipe(self, pipe: BasePipe):
     &#34;&#34;&#34; Add an incoming pipe to the filter.
 
     Parameters
     ----------
-        pipe : Pipe
+        pipe : BasePipe
             The pipe connected to the incoming end of the filterss.
     &#34;&#34;&#34;
     self.__incomingPipes.append(pipe)</code></pre>
@@ -684,7 +684,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L145-L153" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L145-L153" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addOutgoingConnection(self, outgoingConnection):
     &#34;&#34;&#34; Add an outgoing connection object to the filter.
@@ -698,25 +698,25 @@ filterProcess : function
 </details>
 </dd>
 <dt id="pypesandfilters.filter.Filter.addOutgoingPipe"><code class="name flex">
-<span>def <span class="ident">addOutgoingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.Pipe" href="pipe.html#pypesandfilters.pipe.Pipe">Pipe</a>)</span>
+<span>def <span class="ident">addOutgoingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.BasePipe" href="pipe.html#pypesandfilters.pipe.BasePipe">BasePipe</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add an outgoing pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<pre><code>pipe : Pipe
+<pre><code>pipe : BasePipe
     The pipe connected to the outgoing end of the filter.
 </code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L75-L83" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L75-L83" class="git-link">Browse git</a>
 </summary>
-<pre><code class="python">def addOutgoingPipe(self, pipe: Pipe):
+<pre><code class="python">def addOutgoingPipe(self, pipe: BasePipe):
     &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
     Parameters
     ----------
-        pipe : Pipe
+        pipe : BasePipe
             The pipe connected to the outgoing end of the filter.
     &#34;&#34;&#34;
     self.__outgoingPipes.append(pipe)</code></pre>
@@ -734,7 +734,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L115-L123" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L115-L123" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingConnections(self):
     &#34;&#34;&#34; Get incoming connection objects of the filter.
@@ -759,7 +759,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L95-L103" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L95-L103" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingPipes(self):
     &#34;&#34;&#34; Get incoming pipes of the filter.
@@ -784,7 +784,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L135-L143" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L135-L143" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingConnections(self):
     &#34;&#34;&#34; Get outgoing connection objects of the filter.
@@ -809,7 +809,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L85-L93" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L85-L93" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingPipes(self):
     &#34;&#34;&#34; Get outgoing pipes of the filter.
@@ -851,7 +851,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L230-L297" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L230-L297" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class SinkFilter(BaseFilter):
     &#34;&#34;&#34;
@@ -866,12 +866,12 @@ filterProcess : function
         self._BaseFilter__filterProcess = filterProcess
         self.__id = id
 
-    def addIncomingPipe(self, pipe: Pipe):
+    def addIncomingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an incoming pipe to the filter.
         
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the incoming end of the filter.
         &#34;&#34;&#34;
         self.__incomingPipes.append(pipe)
@@ -940,7 +940,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L273-L281" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L273-L281" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addIncomingConnection(self, incomingConnection):
     &#34;&#34;&#34; Add an incoming connection object to the filter.
@@ -954,25 +954,25 @@ filterProcess : function
 </details>
 </dd>
 <dt id="pypesandfilters.filter.SinkFilter.addIncomingPipe"><code class="name flex">
-<span>def <span class="ident">addIncomingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.Pipe" href="pipe.html#pypesandfilters.pipe.Pipe">Pipe</a>)</span>
+<span>def <span class="ident">addIncomingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.BasePipe" href="pipe.html#pypesandfilters.pipe.BasePipe">BasePipe</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add an incoming pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<pre><code>pipe : Pipe
+<pre><code>pipe : BasePipe
     The pipe connected to the incoming end of the filter.
 </code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L243-L251" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L243-L251" class="git-link">Browse git</a>
 </summary>
-<pre><code class="python">def addIncomingPipe(self, pipe: Pipe):
+<pre><code class="python">def addIncomingPipe(self, pipe: BasePipe):
     &#34;&#34;&#34; Add an incoming pipe to the filter.
     
     Parameters
     ----------
-        pipe : Pipe
+        pipe : BasePipe
             The pipe connected to the incoming end of the filter.
     &#34;&#34;&#34;
     self.__incomingPipes.append(pipe)</code></pre>
@@ -990,7 +990,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L263-L271" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L263-L271" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingConnections(self):
     &#34;&#34;&#34; Get incoming connection objects of the filter.
@@ -1015,7 +1015,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L253-L261" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L253-L261" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getIncomingPipes(self):
     &#34;&#34;&#34; Get incoming pipes of the filter.
@@ -1057,7 +1057,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L170-L227" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L170-L227" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">class SourceFilter(BaseFilter):
     &#34;&#34;&#34;
@@ -1082,12 +1082,12 @@ filterProcess : function
         &#34;&#34;&#34;
         return self.__outgoingPipes
 
-    def addOutgoingPipe(self, pipe: Pipe):
+    def addOutgoingPipe(self, pipe: BasePipe):
         &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
         Parameters
         ----------
-            pipe : Pipe
+            pipe : BasePipe
                 The pipe connected to the outgoing end of the filter.
         &#34;&#34;&#34;
         self.__outgoingPipes.append(pipe)
@@ -1136,7 +1136,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L213-L221" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L213-L221" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def addOutgoingConnection(self, outgoingConnection):
     &#34;&#34;&#34; Add an outgoing connection object to the filter.
@@ -1150,25 +1150,25 @@ filterProcess : function
 </details>
 </dd>
 <dt id="pypesandfilters.filter.SourceFilter.addOutgoingPipe"><code class="name flex">
-<span>def <span class="ident">addOutgoingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.Pipe" href="pipe.html#pypesandfilters.pipe.Pipe">Pipe</a>)</span>
+<span>def <span class="ident">addOutgoingPipe</span></span>(<span>self, pipe: <a title="pypesandfilters.pipe.BasePipe" href="pipe.html#pypesandfilters.pipe.BasePipe">BasePipe</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add an outgoing pipe to the filter.</p>
 <h2 id="parameters">Parameters</h2>
-<pre><code>pipe : Pipe
+<pre><code>pipe : BasePipe
     The pipe connected to the outgoing end of the filter.
 </code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L193-L201" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L193-L201" class="git-link">Browse git</a>
 </summary>
-<pre><code class="python">def addOutgoingPipe(self, pipe: Pipe):
+<pre><code class="python">def addOutgoingPipe(self, pipe: BasePipe):
     &#34;&#34;&#34; Add an outgoing pipe to the filter.
 
     Parameters
     ----------
-        pipe : Pipe
+        pipe : BasePipe
             The pipe connected to the outgoing end of the filter.
     &#34;&#34;&#34;
     self.__outgoingPipes.append(pipe)</code></pre>
@@ -1186,7 +1186,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L203-L211" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L203-L211" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingConnections(self):
     &#34;&#34;&#34; Get outgoing connection objects of the filter.
@@ -1211,7 +1211,7 @@ filterProcess : function
 <details class="source">
 <summary>
 <span>Expand source code</span>
-<a href="https://github.com/chiefsan/pypes-and-filters/blob/1775a485edb6d7bcc8bd15efa7e4d041c873bd85/pypesandfilters/filter.py#L183-L191" class="git-link">Browse git</a>
+<a href="https://github.com/chiefsan/pypes-and-filters/blob/fe582bbf449311b5106d543345ee4d1cb261b5d4/pypesandfilters/filter.py#L183-L191" class="git-link">Browse git</a>
 </summary>
 <pre><code class="python">def getOutgoingPipes(self):
     &#34;&#34;&#34; Get outgoing pipes of the filter.
