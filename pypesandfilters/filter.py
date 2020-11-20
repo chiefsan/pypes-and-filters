@@ -70,7 +70,7 @@ class Filter(BaseFilter):
         self.__incomingConnections = []
         self.__outgoingConnections = []
         self._BaseFilter__filterProcess = filterProcess
-        self.__id = id
+        self._BaseFilter__id = id
 
     def addOutgoingPipe(self, pipe: BasePipe):
         """ Add an outgoing pipe to the filter.
@@ -178,7 +178,7 @@ class SourceFilter(BaseFilter):
         self.__outgoingPipes = []
         self.__outgoingConnections = []
         self._BaseFilter__filterProcess = filterProcess
-        self.__id = id
+        self._BaseFilter__id = id
 
     def getOutgoingPipes(self):
         """ Get outgoing pipes of the filter.
@@ -238,7 +238,7 @@ class SinkFilter(BaseFilter):
         self.__incomingPipes = []
         self.__incomingConnections = []
         self._BaseFilter__filterProcess = filterProcess
-        self.__id = id
+        self._BaseFilter__id = id
 
     def addIncomingPipe(self, pipe: BasePipe):
         """ Add an incoming pipe to the filter.
