@@ -2,10 +2,9 @@ import abc
 from multiprocessing import Pipe as mpPipe
 from multiprocessing.connection import wait
 
-from .pipestrategy import FIFO,LIFO
 
 class BasePipe(object, metaclass=abc.ABCMeta):
-    '''
+    """
     Parameters
     ----------
         incomingFilter : BaseFilter
@@ -13,16 +12,17 @@ class BasePipe(object, metaclass=abc.ABCMeta):
 
         outgoingFilter : BaseFilter
             Filter to which pipe needs to send the message.
-            
+
         strategy : PipeStrategy
             Strategy to reorder the messages present in pipe before sending to outgoingFilter (eg., FIFO,LIFO).
-    '''
+    """
+
     @abc.abstractmethod
     def run(self):
         """
         Get messages from the incomingFilter,then apply the pipe strategy to it, and finally send them to the outgoingFilter.
         """
-        raise NotImplementedError('to be implemented by children')
+        raise NotImplementedError("to be implemented by children")
 
     def __init__(self, id, incomingFilter, outgoingFilter, strategy=None):
         self.__id = id
@@ -40,6 +40,7 @@ class BasePipe(object, metaclass=abc.ABCMeta):
         self.__incomingFilter.addOutgoingPipe(self)
         self.__outgoingFilter.addIncomingPipe(self)
         self.__strategy = strategy
+
 
 class Pipe(BasePipe):
     """A standard pipe.

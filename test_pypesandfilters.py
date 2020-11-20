@@ -1,5 +1,6 @@
 from pypesandfilters import Filter, SourceFilter, SinkFilter, Pipe, Pipeline
 
+
 def test1():
     sink = SinkFilter("sink", abs)
     filter = Filter(1, abs)
@@ -12,5 +13,6 @@ def test1():
     # pipeline.myGraphViz("/mnt/c/Users/sanja/Desktop/lol.PNG")
     pipeline.run(2)
 
+
 def test2():
-    assert 2==2
+    assert 2 == 2

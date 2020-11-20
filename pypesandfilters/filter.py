@@ -1,21 +1,18 @@
 import abc
-import typing
-from multiprocessing import Process, Pipe, current_process
 from multiprocessing.connection import wait
 from .pipe import BasePipe, Pipe
-from .message import Message
 
 
 class BaseFilter(object, metaclass=abc.ABCMeta):
     """
     Abstract base filter class.
-    
+
     Receives messages and preforms required processing on them before sending them to appropriate destinations.
     """
 
     @abc.abstractmethod
     def run(self):
-        """Abstract method that determines how the filter executes the required process when spawned. 
+        """Abstract method that determines how the filter executes the required process when spawned.
 
         It is responsible for receiving messages from incoming pipes, if any, and sending messages to outgoing pipes, if any.
         """
@@ -28,8 +25,8 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
         Parameters
         ----------
             id : str
-                Identifier for the filter. 
-                
+                Identifier for the filter.
+
             filterProcess : function
                 The calllable object (function) that is applied by the filter on the message.
         """
@@ -37,7 +34,7 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
 
     def process(self, data):
         """Apply `filterProcess` on the message.
-        
+
         Parameters
         ----------
             data : object
@@ -45,7 +42,7 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
         """
         output = self.__filterProcess(data)
         return output
-    
+
     def getId(self):
         """
         Get the id of the filter.
@@ -59,8 +56,8 @@ class BaseFilter(object, metaclass=abc.ABCMeta):
 
 
 class Filter(BaseFilter):
-    """A standard filter. 
-    
+    """A standard filter.
+
     A component in the pipeline that has both incoming and outgoing pipes.
     """
 
@@ -169,8 +166,8 @@ class Filter(BaseFilter):
 
 class SourceFilter(BaseFilter):
     """
-    A source filter. 
-    
+    A source filter.
+
     A component in the pipeline that has outgoing pipes but no incoming pipes.
     """
 
@@ -212,7 +209,7 @@ class SourceFilter(BaseFilter):
 
     def addOutgoingConnection(self, outgoingConnection):
         """ Add an outgoing connection object to the filter.
-        
+
         Parameters
         ----------
             outgoingConnection : Connection
@@ -229,7 +226,7 @@ class SourceFilter(BaseFilter):
 
 class SinkFilter(BaseFilter):
     """
-    A sink filter. 
+    A sink filter.
 
     A component in the pipeline that has incoming pipes but no outgoing pipes.
     """
@@ -242,7 +239,7 @@ class SinkFilter(BaseFilter):
 
     def addIncomingPipe(self, pipe: BasePipe):
         """ Add an incoming pipe to the filter.
-        
+
         Parameters
         ----------
             pipe : BasePipe
@@ -252,7 +249,7 @@ class SinkFilter(BaseFilter):
 
     def getIncomingPipes(self):
         """ Get incoming pipes of the filter.
-        
+
         Returns
         -------
             Pipe[]
@@ -262,7 +259,7 @@ class SinkFilter(BaseFilter):
 
     def getIncomingConnections(self):
         """ Get incoming connection objects of the filter.
-        
+
         Returns
         -------
             Connection[]
@@ -272,7 +269,7 @@ class SinkFilter(BaseFilter):
 
     def addIncomingConnection(self, incomingConnection):
         """ Add an incoming connection object to the filter.
-        
+
         Parameters
         ----------
             incomingConnection : Connection
@@ -281,17 +278,14 @@ class SinkFilter(BaseFilter):
         self.__incomingConnections.append(incomingConnection)
 
     def run(self):
-        print(len(self.__incomingConnections))
-        if len(self.__incomingConnections) == 0:
-            print("No incoming connections yet!")
-        while self.__incomingConnections:
-            for reader in wait(self.__incomingConnections):
-                try:
-                    input = reader.recv()
-                except EOFError:
-                    self.__incomingConnections.remove(reader)
-                else:
-                    print("Received")
-        output = self.process(input)
-        print(output)
-        return output
+        if len(self.__incomingConnections) > 0:
+            while self.__incomingConnections:
+                for reader in wait(self.__incomingConnections):
+                    try:
+                        input = reader.recv()
+                    except EOFError:
+                        self.__incomingConnections.remove(reader)
+                    else:
+                        print("Received")
+            output = self.process(input)
+            return output

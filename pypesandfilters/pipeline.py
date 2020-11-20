@@ -1,17 +1,21 @@
-import typing
-from multiprocessing import Process
-from .filter import Filter, SinkFilter, SourceFilter
-from .pipe import Pipe
+"""
+Module for pipeline
+"""
+from collections import defaultdict
 import matplotlib.pyplot as plt
 import networkx as nx
-from collections import defaultdict
+from .filter import Filter, SinkFilter, SourceFilter
+from .pipe import Pipe
 
 
 class Pipeline(object):
 
     """
-    Pipeline class. 
-    Encapsulates a set of data processing elements connected in series, where the output of one element is the input of the next one.
+    Pipeline class.
+    Encapsulates a set of data processing elements
+    connected
+    in series, where the output of one element is the input
+    of the next one.
     """
 
     def __init__(self, id: str):
@@ -62,7 +66,7 @@ class Pipeline(object):
 
     def getSinkFilter(self):
         """Get the list of SinkFilter of the Pipeline.
-        
+
         Returns
         -------
             SinkFilter[]
@@ -73,25 +77,31 @@ class Pipeline(object):
 
     def validate(self):
         """Validate the Pipeline.
-        
-        Verify whether the Pipeline can be represented by an acyclic connected graph with appropriate filters at the leaf nodes. Breadth First Search is applied on the Pipeline.
-       
+
+        Verify whether the Pipeline can be represented by an
+        acyclic connected graph with appropriate filters at the
+        leaf nodes. Breadth First Search is applied on the Pipeline.
+
         Returns
         -------
             Bool
-                A boolean value that indicates whether the Pipeline is valid or not.
+                A boolean value that indicates
+                whether the Pipeline is valid or not.
 
         """
 
-        def add_edge(head, tail, weight):
+        def addEdge(head, tail, weight):
             """
             Add an edge to the graph.
-            `head` and `tail are vertices representing the endpoints of the edge
-            `weight` is the weight of the egde from head to tail
+            `head` and `tail are vertices representing
+            the endpoints of the edge
+            `weight` is the weight of the egde from
+            head to tail
             """
-            # Add the vertices to the graph (if they haven't already been added)
-            add_vertex(head)
-            add_vertex(tail)
+            # Add the vertices to the graph
+            # (if they haven't already been added)
+            addVertex(head)
+            addVertex(tail)
 
             # Self edge => invalid
             if head == tail:
@@ -100,7 +110,7 @@ class Pipeline(object):
             # Since graph is directed, we are not adding the reverse edge
             self.__adjacency[head][tail] = weight
 
-        def add_vertex(vertex):
+        def addVertex(vertex):
             """
             Add a vertex to the graph.
             `vertex` must be a hashable object
@@ -108,19 +118,17 @@ class Pipeline(object):
             if vertex not in self.__adjacency:
                 self.__adjacency[vertex] = {}
 
-        # Create a dictionary to maintain the list of Filters visited by the BFS.
+        # Create a dictionary to maintain the
+        # list of Filters visited by the BFS.
         visited = defaultdict(bool)
 
         # Queue to store the filters
-        queue = []
-
-        self.__components = []
+        queue, self.__components = [], []
 
         # Enqueue the sourceFilter
         queue.append(self.getSourceFilter())
 
         while queue:
-            print(queue, self.__components)
 
             # Dequeue the currentFilter to process
             currentFilter = queue.pop(0)
@@ -144,12 +152,12 @@ class Pipeline(object):
                 # Add the pipe to the list of components
                 self.__components.append(pipe)
 
-                # If a connected Filter has not been visited, then mark it visited and enqueue it
-                if visited[pipe.getOutgoingFilter()] != True:
+                # If a connected Filter has not been
+                # visited, then mark it visited and enqueue it
+                if not visited[pipe.getOutgoingFilter()]:
                     queue.append(pipe.getOutgoingFilter())
-                    add_edge(currentFilter, pipe.getOutgoingFilter(), 1)
+                    addEdge(currentFilter, pipe.getOutgoingFilter(), 1)
                 else:
-                    print("Not Feasible")
                     # Pipeline is cyclic => infeasible
                     return False
 
@@ -158,11 +166,11 @@ class Pipeline(object):
 
     def run(self, input):
         """Fire up all the components in the pipeline.
-        
+
         Parameters
         ----------
             input
-        
+
         Returns
         -------
             output
@@ -179,11 +187,11 @@ class Pipeline(object):
                 component.run(input)
             else:
                 output = component.run()
-        print(output)
 
     def visualize(self, path):
         """
-        Visualize the Pipeline using [networkx](https://pypi.org/project/networkx/).
+        Visualize the Pipeline using
+        [networkx](https://pypi.org/project/networkx/).
 
         Parameters
         ----------
@@ -196,9 +204,10 @@ class Pipeline(object):
         for head in self.__adjacency:
             for tail in self.__adjacency[head]:
                 weight = self.__adjacency[head][tail]
-                graph.add_edge(head, tail, weight=weight)
+                graph.addEdge(head, tail, weight=weight)
 
-        # generate a layout for the graph and set the vertex labels to the Filter ids
+        # generate a layout for the graph and set the vertex
+        # labels to the Filter ids
         layout = nx.spring_layout(graph, seed=0)
         labels = {v: v.getId() for v in graph.nodes()}
         nx.draw(
